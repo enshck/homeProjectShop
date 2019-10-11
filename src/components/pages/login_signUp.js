@@ -15,6 +15,7 @@ const MainContainer = styled.div`
   height: 100vh;
   align-items: center;
   justify-content: center;
+  background: #f6f8fb;
 `;
 
 const SignUp = props => {

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 
 import SignUp from "../components/pages/login_signUp";
-import Items from "../components/pages/Items";
+import Items from "../components/pages/items";
 import firebase from "../utils/firebase";
 
 const PrivateRoute = props => {

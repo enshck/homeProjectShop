@@ -1,40 +1,31 @@
 import { combineReducers } from "redux";
 import types from "./types";
 
-const profile = (
-  // state = null,
-  state = { id: "test" },
+const goodsReducers = (
+  state = {
+    sortType: "list",
+    goods: []
+  },
   action
 ) => {
   switch (action.type) {
-    case types.SET_USER_PROFILE:
+    case types.SET_SORT_GOODS: {
       return {
         ...state,
-        ...action
+        ...{ sortType: action.sortType }
       };
-    default:
-      return state;
-  }
-};
-const studentsList = (state = [], action) => {
-  switch (action.type) {
-    case types.SET_STUDENTS_LIST:
-      return action.payload;
-    default:
-      return state;
-  }
-};
-const trackingSessionResponse = (state = "", action) => {
-  switch (action.type) {
-    case types.NEW_TRACKING_SESSION_RESPONSE:
-      return action.payload;
+    }
+    case types.SET_GOODS_LIST: {
+      return {
+        ...state,
+        ...{ goods: action.goodsList }
+      };
+    }
     default:
       return state;
   }
 };
 
 export const reducers = combineReducers({
-  profile,
-  studentsList,
-  trackingSessionResponse
+  goodsReducers
 });

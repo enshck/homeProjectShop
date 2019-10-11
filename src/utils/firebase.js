@@ -5,14 +5,14 @@ import "firebase/auth";
 import "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyBdFQhVCmvGg3Llt2Sfc_RGOm_DHYOyPTk",
-  authDomain: "homeproject-86608.firebaseapp.com",
-  databaseURL: "https://homeproject-86608.firebaseio.com",
-  projectId: "homeproject-86608",
-  storageBucket: "homeproject-86608.appspot.com",
-  messagingSenderId: "888815962739",
-  appId: "1:888815962739:web:025f0c14dfa1cef4253806",
-  measurementId: "G-LT6DZXVEY0"
+  apiKey: "AIzaSyCxHEdSzkMDqjoHrgLbWgz4lQ8Sa0G646c",
+  authDomain: "homeproject-ca142.firebaseapp.com",
+  databaseURL: "https://homeproject-ca142.firebaseio.com",
+  projectId: "homeproject-ca142",
+  storageBucket: "homeproject-ca142.appspot.com",
+  messagingSenderId: "1043437194905",
+  appId: "1:1043437194905:web:4493932f1fa7ccaaa2b208",
+  measurementId: "G-1G5NHYJ03R"
 };
 
 // Initialize Firebase
