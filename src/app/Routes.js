@@ -1,19 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 
 import SignUp from "../components/pages/login_signUp";
 import Items from "../components/pages/items";
-import firebase from "../utils/firebase";
 
 const PrivateRoute = props => {
-  const { render, component: Component, authStatus, ...rest } = props;
+  const { render, component: Component, authStatus, profile, ...rest } = props;
 
   return (
     <Route
       {...rest}
       render={props => {
         if (authStatus === "autorize") {
-          return render ? render() : <Component {...props} />;
+          return render ? render() : <Component {...props} profile={profile} />;
         } else if (authStatus === "unautorize") {
           return (
             <Redirect
@@ -52,15 +51,7 @@ const PublicRoute = props => {
   );
 };
 
-const Routes = ({ profile }) => {
-  const [authStatus, setAuthStatus] = useState(null);
-
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged(user => {
-      user ? setAuthStatus("autorize") : setAuthStatus("unautorize");
-    });
-  });
-
+const Routes = ({ profile, authStatus }) => {
   return (
     <Switch>
       <Route
@@ -80,7 +71,11 @@ const Routes = ({ profile }) => {
         path="/signUp"
         {...{ authStatus, type: "signUp" }}
       />
-      <PrivateRoute component={Items} path="/items" {...{ authStatus }} />
+      <PrivateRoute
+        component={Items}
+        path="/items"
+        {...{ authStatus, profile }}
+      />
 
       <Route render={() => <div>Not found</div>} />
     </Switch>

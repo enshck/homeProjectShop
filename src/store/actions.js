@@ -10,5 +10,7 @@ export const setGoodsList = goodsList => ({
   goodsList
 });
 
-// export const setError = error => ({ type: types.SET_ERROR, payload: error });
-//action creators
+export const setOrders = orders => ({
+  type: types.SET_ORDERS,
+  orders
+});

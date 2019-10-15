@@ -18,6 +18,7 @@ export const HeaderButton = styled.div`
     css`
       width: 30px;
       height: 30px;
+      margin-left: 10px;
       img {
         width: 20px;
         height: 20px;
@@ -27,5 +28,16 @@ export const HeaderButton = styled.div`
     props.signOut &&
     css`
       padding: 5px;
+    `}
+  ${props =>
+    props.basket &&
+    css`
+      width: 30px;
+      height: 30px;
+
+      img {
+        width: 30px;
+        height: 30px;
+      }
     `}
 `;

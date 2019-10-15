@@ -4,7 +4,8 @@ import types from "./types";
 const goodsReducers = (
   state = {
     sortType: "list",
-    goods: []
+    goods: [],
+    orders: []
   },
   action
 ) => {
@@ -19,6 +20,12 @@ const goodsReducers = (
       return {
         ...state,
         ...{ goods: action.goodsList }
+      };
+    }
+    case types.SET_ORDERS: {
+      return {
+        ...state,
+        ...{ orders: action.orders.ordersData }
       };
     }
     default:

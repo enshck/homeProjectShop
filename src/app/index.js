@@ -8,10 +8,24 @@ import "./style.css";
 import firebase from "../utils/firebase";
 
 const App = () => {
+  const [authStatus, setAuthStatus] = useState(null);
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    firebase.auth().onAuthStateChanged(user => {
+      if (user) {
+        setAuthStatus("autorize");
+        setUserData(user);
+      } else {
+        setAuthStatus("unautorize");
+        setUserData(null);
+      }
+    });
+  });
   return (
     <Provider store={store}>
       <BrowserRouter>
-        <Routes />
+        <Routes authStatus={authStatus} profile={userData} />
       </BrowserRouter>
     </Provider>
   );

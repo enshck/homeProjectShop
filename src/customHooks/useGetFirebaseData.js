@@ -9,8 +9,7 @@ export const useGetFirebaseData = () => {
   const [error, setError] = useState(false);
 
   const handeleCall = async (attribute = {}) => {
-    const { collection, actionHandler } = attribute;
-    // console.log('USE EFFECT GO TO FIREBASE COLLECTION', collection);
+    const { collection, singleDoc, actionHandler } = attribute;
 
     setCalled(true);
     setLoading(true);
@@ -18,17 +17,30 @@ export const useGetFirebaseData = () => {
 
     try {
       if (collection) {
-        const doc = await firebase
-          .firestore()
-          .collection(collection)
-          .get();
+        if (singleDoc) {
+          const doc = await firebase
+            .firestore()
+            .collection(collection)
+            .doc(singleDoc)
+            .get();
 
-        if (!doc.empty) {
-          const docData = await doc.docs.map(item => item.data());
-          setData(docData);
-          actionHandler && actionHandler(docData);
+          const docData = doc.data();
+
+          setData(await docData);
+          actionHandler && actionHandler(await docData);
         } else {
-          setError(true);
+          const doc = await firebase
+            .firestore()
+            .collection(collection)
+            .get();
+
+          if (!doc.empty) {
+            const docData = await doc.docs.map(item => item.data());
+            setData(docData);
+            actionHandler && actionHandler(docData);
+          } else {
+            setError(true);
+          }
         }
       }
     } catch (error) {
@@ -37,6 +49,5 @@ export const useGetFirebaseData = () => {
     setLoading(false);
   };
 
-  // console.log(data, 'data');
   return [handeleCall, { data, loading, called, error }];
 };

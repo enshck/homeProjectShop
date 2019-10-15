@@ -2,6 +2,9 @@ import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import { connect } from "react-redux";
 
+import firebase from "../../../utils/firebase";
+import { setOrders } from "../../../store/actions";
+
 const MainContainer = styled.div`
   overflow: auto;
   display: flex;
@@ -88,7 +91,14 @@ const GoodsRow = styled.div`
 `;
 
 const GoodsContainer = props => {
-  const { goods, sortType } = props;
+  const {
+    goods,
+    sortType,
+    setOpenBasketModal,
+    orders,
+    profile,
+    setOrders
+  } = props;
   const [sortedList, setSortedList] = useState([]);
 
   useEffect(() => {
@@ -106,6 +116,46 @@ const GoodsContainer = props => {
 
     setSortedList(result);
   }, [goods]);
+
+  const buyButtonHandler = singleGood => {
+    const isCreated = orders.some(
+      elem => elem.goodsData.goodId === singleGood.goodId
+    );
+
+    if (isCreated) {
+      orders.forEach((elem, item) => {
+        const { goodsData } = elem;
+        if (goodsData.goodId === singleGood.goodId) {
+          orders[item].count++;
+        }
+      });
+    } else {
+      orders.push({
+        count: 1,
+        goodsData: singleGood
+      });
+    }
+
+    firebase
+      .firestore()
+      .collection("orders")
+      .doc(profile.uid)
+      .set({
+        ordersData: orders
+      })
+      .then(result => {
+        firebase
+          .firestore()
+          .collection("orders")
+          .doc(profile.uid)
+          .get()
+          .then(elem => {
+            setOrders(elem.data());
+          });
+        setOpenBasketModal(true);
+      })
+      .catch(err => console.log(err));
+  };
 
   if (sortType === "grid") {
     return (
@@ -127,7 +177,9 @@ const GoodsContainer = props => {
                   <ControlContainer>
                     <h1>${parseFloat(price).toFixed(2)}</h1>
                     {isSale && <SaleBlock>Скидка</SaleBlock>}
-                    <ButtonBuy>Купить</ButtonBuy>
+                    <ButtonBuy onClick={() => buyButtonHandler(elem)}>
+                      Купить
+                    </ButtonBuy>
                   </ControlContainer>
                 </SingleGoodContainer>
               );
@@ -155,7 +207,9 @@ const GoodsContainer = props => {
             <ControlContainer>
               <h1>${parseFloat(price).toFixed(2)}</h1>
               {isSale && <SaleBlock>Скидка</SaleBlock>}
-              <ButtonBuy>Купить</ButtonBuy>
+              <ButtonBuy onClick={() => buyButtonHandler(elem)}>
+                Купить
+              </ButtonBuy>
             </ControlContainer>
           </SingleGoodContainer>
         );
@@ -165,12 +219,20 @@ const GoodsContainer = props => {
 };
 
 const mapStateToProps = state => {
-  const { goods, sortType } = state.goodsReducers;
+  const { goods, sortType, orders } = state.goodsReducers;
 
   return {
     goods,
-    sortType
+    sortType,
+    orders
   };
 };
 
-export default connect(mapStateToProps)(GoodsContainer);
+const mapDispatchToProps = dispatch => ({
+  setOrders: orders => dispatch(setOrders(orders))
+});
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(GoodsContainer);
