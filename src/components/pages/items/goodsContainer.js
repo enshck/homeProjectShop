@@ -4,6 +4,7 @@ import { connect } from "react-redux";
 
 import firebase from "../../../utils/firebase";
 import { setOrders } from "../../../store/actions";
+import { getOrders } from "../../../utils/handlers";
 
 const MainContainer = styled.div`
   overflow: auto;
@@ -144,14 +145,7 @@ const GoodsContainer = props => {
         ordersData: orders
       })
       .then(result => {
-        firebase
-          .firestore()
-          .collection("orders")
-          .doc(profile.uid)
-          .get()
-          .then(elem => {
-            setOrders(elem.data());
-          });
+        getOrders(profile.uid, setOrders);
         setOpenBasketModal(true);
       })
       .catch(err => console.log(err));

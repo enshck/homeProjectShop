@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { connect } from "react-redux";
 
-import Header from "../../header";
 import { useGetFirebaseData } from "../../../customHooks/useGetFirebaseData";
 import { setGoodsList, setOrders } from "../../../store/actions";
-import GoodsContainer from "../../../components/pages/items/goodsContainer";
+import Header from "../../header";
 import { signOutHandler } from "../../../utils/handlers";
+import ItemsDetailContainer from "../itemsDetails/itemsDetailsContainer";
 
-const ItemsContainer = styled.div`
+const MainContainer = styled.div`
   position: absolute;
   top: 0;
   left: 0;
@@ -19,12 +19,13 @@ const ItemsContainer = styled.div`
   background: #f5f5f5;
 `;
 
-const Items = props => {
+const ItemsDetail = props => {
+  const { match, setGoodsList, goods, profile, setOrdersList } = props;
+
+  const [changedProduct, changeProduct] = useState({});
   const [getGoods, goodsData] = useGetFirebaseData();
   const [getOrders, ordersData] = useGetFirebaseData();
   const [isOpenBasketModal, setOpenBasketModal] = useState(false);
-
-  const { setGoodsList, profile, setOrdersList, orders } = props;
 
   if (!goodsData.called) {
     getGoods({
@@ -41,27 +42,35 @@ const Items = props => {
     });
   }
 
+  useEffect(() => {
+    goods.forEach(elem => {
+      const { goodId } = elem;
+
+      goodId === match.params.id && changeProduct(elem);
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [goods]);
+
   return (
-    <ItemsContainer>
+    <MainContainer>
       <Header
         signOutHandler={signOutHandler}
         isOpenBasketModal={isOpenBasketModal}
         setOpenBasketModal={setOpenBasketModal}
         profile={profile}
+        mode={"singleItem"}
       />
-      <GoodsContainer
-        setOpenBasketModal={setOpenBasketModal}
-        profile={profile}
-      />
-    </ItemsContainer>
+      <ItemsDetailContainer changedProduct={changedProduct} />
+    </MainContainer>
   );
 };
 
 const mapStateToProps = state => {
-  const { orders } = state.goodsReducers;
+  const { orders, goods } = state.goodsReducers;
 
   return {
-    orders
+    orders,
+    goods
   };
 };
 
@@ -69,8 +78,7 @@ const mapDispatchToProps = dispatch => ({
   setGoodsList: goodsList => dispatch(setGoodsList(goodsList)),
   setOrdersList: orders => dispatch(setOrders(orders))
 });
-
 export default connect(
   mapStateToProps,
   mapDispatchToProps
-)(Items);
+)(ItemsDetail);

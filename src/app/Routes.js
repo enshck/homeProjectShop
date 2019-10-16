@@ -3,6 +3,7 @@ import { Route, Redirect, Switch } from "react-router-dom";
 
 import SignUp from "../components/pages/login_signUp";
 import Items from "../components/pages/items";
+import ItemsDetail from "../components/pages/itemsDetails";
 
 const PrivateRoute = props => {
   const { render, component: Component, authStatus, profile, ...rest } = props;
@@ -72,8 +73,14 @@ const Routes = ({ profile, authStatus }) => {
         {...{ authStatus, type: "signUp" }}
       />
       <PrivateRoute
+        exact
         component={Items}
         path="/items"
+        {...{ authStatus, profile }}
+      />
+      <PrivateRoute
+        component={ItemsDetail}
+        path={`/items/:id`}
         {...{ authStatus, profile }}
       />
 

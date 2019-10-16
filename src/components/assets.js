@@ -7,6 +7,7 @@ export const HeaderButton = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 3px;
+  position: relative
   cursor: pointer;  
   ${props =>
     props.active &&
