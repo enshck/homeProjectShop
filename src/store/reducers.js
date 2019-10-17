@@ -5,7 +5,8 @@ const goodsReducers = (
   state = {
     sortType: "list",
     goods: [],
-    orders: []
+    orders: [],
+    isOpenBasketModal: false
   },
   action
 ) => {
@@ -26,6 +27,12 @@ const goodsReducers = (
       return {
         ...state,
         ...{ orders: action.orders.ordersData }
+      };
+    }
+    case types.SET_OPEN_MODAL_STATUS: {
+      return {
+        ...state,
+        ...{ isOpenBasketModal: action.isOpen }
       };
     }
     default:

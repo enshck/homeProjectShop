@@ -14,3 +14,8 @@ export const setOrders = orders => ({
   type: types.SET_ORDERS,
   orders
 });
+
+export const setOpenBasketModal = isOpen => ({
+  type: types.SET_OPEN_MODAL_STATUS,
+  isOpen
+});

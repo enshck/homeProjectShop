@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import { connect } from "react-redux";
+import { Link } from "react-router-dom";
 
-import firebase from "../../../utils/firebase";
 import { setOrders } from "../../../store/actions";
-import { getOrders } from "../../../utils/handlers";
+import { buyButtonHandler } from "../../../utils/handlers";
 
 const MainContainer = styled.div`
   overflow: auto;
@@ -61,17 +61,14 @@ const InfoContainer = styled.div`
     `}
 `;
 
-const SaleBlock = styled.div`
-  background: #a3c964;
-  color: #64872d;
-  padding: 5px 50px;
-  border-radius: 5px;
-`;
-
 const ControlContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  p {
+    margin: 0;
+    color: #fb3f4c;
+  }
 `;
 
 const ButtonBuy = styled.div`
@@ -89,6 +86,19 @@ const GoodsRow = styled.div`
   width: 100%;
   justify-content: space-between;
   margin-top: 10px;
+`;
+
+const DetailsButton = styled(Link)`
+  padding-left: 8px;
+  padding-right: 8px;
+  font-size: 16px;
+  line-height: 24px;
+  background-color: #ffa900;
+  color: #fff;
+  border-radius: 8px;
+  margin-top: 5px;
+  cursor: pointer;
+  text-decoration: none;
 `;
 
 const GoodsContainer = props => {
@@ -118,39 +128,6 @@ const GoodsContainer = props => {
     setSortedList(result);
   }, [goods]);
 
-  const buyButtonHandler = singleGood => {
-    const isCreated = orders.some(
-      elem => elem.goodsData.goodId === singleGood.goodId
-    );
-
-    if (isCreated) {
-      orders.forEach((elem, item) => {
-        const { goodsData } = elem;
-        if (goodsData.goodId === singleGood.goodId) {
-          orders[item].count++;
-        }
-      });
-    } else {
-      orders.push({
-        count: 1,
-        goodsData: singleGood
-      });
-    }
-
-    firebase
-      .firestore()
-      .collection("orders")
-      .doc(profile.uid)
-      .set({
-        ordersData: orders
-      })
-      .then(result => {
-        getOrders(profile.uid, setOrders);
-        setOpenBasketModal(true);
-      })
-      .catch(err => console.log(err));
-  };
-
   if (sortType === "grid") {
     return (
       <MainContainer sortType={sortType}>
@@ -170,8 +147,21 @@ const GoodsContainer = props => {
                   </InfoContainer>
                   <ControlContainer>
                     <h1>${parseFloat(price).toFixed(2)}</h1>
-                    {isSale && <SaleBlock>Скидка</SaleBlock>}
-                    <ButtonBuy onClick={() => buyButtonHandler(elem)}>
+                    {isSale && <p>SALE</p>}
+                    <DetailsButton to={`/items/${goodId}`}>
+                      Подробнее
+                    </DetailsButton>
+                    <ButtonBuy
+                      onClick={() =>
+                        buyButtonHandler({
+                          orders: orders,
+                          singleGood: elem,
+                          profile,
+                          setOrders,
+                          setOpenBasketModal
+                        })
+                      }
+                    >
                       Купить
                     </ButtonBuy>
                   </ControlContainer>
@@ -200,8 +190,19 @@ const GoodsContainer = props => {
             </InfoContainer>
             <ControlContainer>
               <h1>${parseFloat(price).toFixed(2)}</h1>
-              {isSale && <SaleBlock>Скидка</SaleBlock>}
-              <ButtonBuy onClick={() => buyButtonHandler(elem)}>
+              {isSale && <p>SALE</p>}
+              <DetailsButton to={`/items/${goodId}`}>Подробнее</DetailsButton>
+              <ButtonBuy
+                onClick={() =>
+                  buyButtonHandler({
+                    orders: orders,
+                    singleGood: elem,
+                    profile,
+                    setOrders,
+                    setOpenBasketModal
+                  })
+                }
+              >
                 Купить
               </ButtonBuy>
             </ControlContainer>
