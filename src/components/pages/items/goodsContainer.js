@@ -34,10 +34,17 @@ const SingleGoodContainer = styled.div`
   ${props =>
     props.sortType === "grid" &&
     css`
-      border: none;
+      border: 1px solid #eaeaea
       flex-direction: column;
+      @media (max-width: 950px) {
+        img {
+          width: 120px;
+          height: 140px;
+        }
+  }
     `}
 `;
+
 const NameContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -81,6 +88,12 @@ const ButtonBuy = styled.div`
 `;
 
 const GoodsRow = styled.div`
+  @media (max-width: 950px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  @media (max-width: 550px) {
+    grid-template-columns: 1fr;
+  }
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   width: 100%;
@@ -142,7 +155,7 @@ const GoodsContainer = props => {
                     <img src={pictureUrl} alt={"goodsPicture"} />
                     <NameContainer sortType={sortType}>
                       <h2>{goodName}</h2>
-                      <p>Product id:{goodId}</p>
+                      <p>Идентификатор: {goodId}</p>
                     </NameContainer>
                   </InfoContainer>
                   <ControlContainer>
@@ -185,7 +198,7 @@ const GoodsContainer = props => {
               <img src={pictureUrl} alt={"goodsPicture"} />
               <NameContainer sortType={sortType}>
                 <h2>{goodName}</h2>
-                <p>Product id:{goodId}</p>
+                <p>Идентификатор: {goodId}</p>
               </NameContainer>
             </InfoContainer>
             <ControlContainer>

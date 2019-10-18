@@ -9,13 +9,14 @@ import plus from "../img/plus.png";
 import minus from "../img/minus.png";
 import Spinner from "./spinner";
 import deleteIcon from "../img/delete.png";
+import successIcon from "../img/successIcon.png";
 import { getOrders } from "../utils/handlers";
 
 const MainModalContainer = styled.div`
   width: 100%;
   height: 100vh;
   z-index: 900;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   display: flex;
@@ -60,9 +61,14 @@ const SingleGoodsContainer = styled.div`
   border-radius: 3px;
   padding: 24px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   margin-top: 10px;
   position: relative;
+
+  @media (max-width: 900px) {
+    grid-template-columns: repeat(1, 1fr);
+    grid-gap: 10px;
+  }
 `;
 
 const ProductPicture = styled.img`
@@ -84,6 +90,9 @@ const CountContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  @media (max-width: 900px) {
+    margin-top: 15px;
+  }
 `;
 
 const InfoContainer = styled.div`
@@ -182,6 +191,10 @@ const DeleteIcon = styled.img`
 
 const MainInfoContainer = styled.div`
   display: flex;
+  @media (max-width: 900px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
 
 const PriceContainer = styled.div`
@@ -193,12 +206,28 @@ const PriceContainer = styled.div`
     line-height: 24px;
     font-weight: 400;
   }
+  @media (max-width: 900px) {
+    justify-content: center;
+  }
+`;
+
+const SucessOrderContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  h2 {
+    font-weight: 400;
+  }
 `;
 
 const BasketModal = props => {
   const { setOpenBasketModal, setOrders, orders, profile } = props;
   const [summaryOrderPrice, setSummaryOrderPrice] = useState(0);
   const [isFetching, setFetching] = useState(false);
+  const [orderStatus, setOrderStatus] = useState(false);
 
   useEffect(() => {
     let sum = 0;
@@ -251,6 +280,50 @@ const BasketModal = props => {
       })
       .catch(err => console.log(err));
   };
+
+  const submitHandlerOrder = () => {
+    firebase
+      .firestore()
+      .collection("successOrders")
+      .add({
+        orders
+      })
+      .then(() => {
+        firebase
+          .firestore()
+          .collection("orders")
+          .doc(profile.uid)
+          .delete()
+          .then(() => {
+            setOrders([]);
+            setOrderStatus(true);
+          })
+          .catch(err => {});
+      })
+      .catch(err => {});
+  };
+
+  if (orderStatus) {
+    return (
+      <MainModalContainer>
+        <ModalContainer>
+          <CloseButton
+            src={close}
+            alt={"close"}
+            onClick={() => setOpenBasketModal(false)}
+          />
+          <ModalContent>
+            <SucessOrderContainer>
+              <h2>
+                Спасибо. Ваш заказ принят. Наши менеджеры скоро свяжутся с вами
+              </h2>
+              <img src={successIcon} alt={"success"} />
+            </SucessOrderContainer>
+          </ModalContent>
+        </ModalContainer>
+      </MainModalContainer>
+    );
+  }
 
   return (
     <MainModalContainer>
@@ -312,7 +385,9 @@ const BasketModal = props => {
           )}
           <SummaryOrder>
             <p>Вместе: {summaryOrderPrice}$</p>
-            <ButtonSubmit>Оформить заказ</ButtonSubmit>
+            <ButtonSubmit onClick={submitHandlerOrder}>
+              Оформить заказ
+            </ButtonSubmit>
           </SummaryOrder>
         </ModalContent>
       </ModalContainer>

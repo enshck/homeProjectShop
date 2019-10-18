@@ -20,5 +20,10 @@ firebase.initializeApp(firebaseConfig);
 
 export const firestore = firebase.firestore();
 export const auth = firebase.auth();
+export const authGoogleProvider = new firebase.auth.GoogleAuthProvider();
+// export const authTwitterProvider = new firebase.auth.TwitterAuthProvider();
+window.recaptchaVerifier = new firebase.auth.RecaptchaVerifier(
+  "recaptcha-container"
+);
 
 export default firebase;

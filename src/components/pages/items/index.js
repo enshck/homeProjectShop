@@ -13,7 +13,7 @@ const ItemsContainer = styled.div`
   top: 0;
   left: 0;
   width: 100%;
-  height: 100vh;
+  min-height: 100vh;
   display: flex;
   flex-direction: column;
   background: #f5f5f5;
@@ -24,7 +24,7 @@ const Items = props => {
   const [getOrders, ordersData] = useGetFirebaseData();
   const [isOpenBasketModal, setOpenBasketModal] = useState(false);
 
-  const { setGoodsList, profile, setOrdersList, orders } = props;
+  const { setGoodsList, profile, setOrdersList } = props;
 
   if (!goodsData.called) {
     getGoods({

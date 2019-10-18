@@ -31,12 +31,19 @@ const InfoContainer = styled.div`
   }
 `;
 const PictureProduct = styled.div`
-  width: 450px;
-  height: 600px;
+  width: 35%;
+  height: 50%;
+  max-width: 450px;
+  max-height: 600px;
+  min-width: 200px;
+  min-height: 300px;
   overflow: hidden;
   cursor: zoom-in;
   border: 1px solid #eaeaea;
   border-radius: 4px;
+  -webkit-box-shadow: 0px 0px 20px -16px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 20px -16px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 20px -16px rgba(0, 0, 0, 0.75);
 `;
 
 const ControlsContainer = styled.div`

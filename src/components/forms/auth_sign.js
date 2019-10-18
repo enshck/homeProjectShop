@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { NavLink } from "react-router-dom";
 
+import firebase, { authGoogleProvider } from "../../utils/firebase";
+import google from "../../img/google.png";
+import phone from "../../img/phone.png";
+
 const FormMainContainer = styled.div`
   background: #fff;
   box-shadow: 0 3px 6px 0 rgba(0, 0, 0, 0.16);
@@ -106,6 +110,18 @@ const InputContainer = styled.div`
   }
 `;
 
+const Social = styled.div`
+  display: flex;
+  width: 100%;
+  margin-top: 20px;
+  justify-content: space-around;
+  img {
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+  }
+`;
+
 const SignUpForm = props => {
   const { formData, setFormData, signUpHandler, type } = props;
   const [activeInput, setActiveInput] = useState(null);
@@ -164,6 +180,14 @@ const SignUpForm = props => {
         <SubmitButton onClick={signUpHandler}>
           {type === "auth" ? "Войти" : "Зарегистрироватся"}
         </SubmitButton>
+        <Social>
+          <img
+            src={google}
+            alt={"google"}
+            onClick={() => firebase.auth().signInWithPopup(authGoogleProvider)}
+          />
+          <img src={phone} alt={"phone"} />
+        </Social>
       </ControlsContainer>
       {formData.error && <ErrorMessage>{formData.error}</ErrorMessage>}
     </FormMainContainer>

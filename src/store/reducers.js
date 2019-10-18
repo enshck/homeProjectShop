@@ -26,7 +26,7 @@ const goodsReducers = (
     case types.SET_ORDERS: {
       return {
         ...state,
-        ...{ orders: action.orders.ordersData }
+        ...{ orders: action.orders.ordersData || [] }
       };
     }
     case types.SET_OPEN_MODAL_STATUS: {
