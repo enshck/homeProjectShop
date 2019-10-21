@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
@@ -132,8 +133,6 @@ const GoodsContainer = props => {
   } = props;
   const [sortedList, setSortedList] = useState([]);
 
-  // console.log(sortType, "sort");
-
   useEffect(() => {
     let singleGoodsListArray = [];
     const result = [];
@@ -233,6 +232,15 @@ const GoodsContainer = props => {
       })}
     </MainContainer>
   );
+};
+
+GoodsContainer.propTypes = {
+  goods: PropTypes.array.isRequired,
+  sortType: PropTypes.string.isRequired,
+  setOpenBasketModal: PropTypes.func.isRequired,
+  orders: PropTypes.array.isRequired,
+  profile: PropTypes.object,
+  setOrders: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {

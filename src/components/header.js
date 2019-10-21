@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import styled, { css } from "styled-components";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import gridImg from "../img/grid.png";
@@ -112,6 +113,17 @@ const Header = props => {
       </SortContainer>
     </MainContainer>
   );
+};
+
+Header.propTypes = {
+  signOutHandler: PropTypes.func.isRequired,
+  sortType: PropTypes.string.isRequired,
+  setTypeSort: PropTypes.func.isRequired,
+  setOpenBasketModal: PropTypes.func.isRequired,
+  isOpenBasketModal: PropTypes.bool.isRequired,
+  profile: PropTypes.object,
+  orders: PropTypes.array.isRequired,
+  mode: PropTypes.string
 };
 
 const mapStateToProps = state => {

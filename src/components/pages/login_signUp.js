@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import { withRouter } from "react-router";
 
@@ -92,6 +93,11 @@ const SignUp = props => {
       )}
     </MainContainer>
   );
+};
+
+SignUp.propTypes = {
+  history: PropTypes.object.isRequired,
+  type: PropTypes.string.isRequired
 };
 
 export default withRouter(SignUp);

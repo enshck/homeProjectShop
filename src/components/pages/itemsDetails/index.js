@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
@@ -100,6 +101,16 @@ const ItemsDetail = props => {
       <ItemsDetailContainer changedProduct={changedProduct} profile={profile} />
     </MainContainer>
   );
+};
+
+ItemsDetail.propTypes = {
+  match: PropTypes.object.isRequired,
+  setGoodsList: PropTypes.func.isRequired,
+  goods: PropTypes.array,
+  profile: PropTypes.object,
+  setOrdersList: PropTypes.func.isRequired,
+  isOpenBasketModal: PropTypes.bool.isRequired,
+  setOpenBasketModal: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {

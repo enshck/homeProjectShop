@@ -1,5 +1,6 @@
 import React from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import ZoomablePicture from "../../zoomablePicture";
@@ -138,6 +139,13 @@ const ItemsDetailsContainer = props => {
       </ControlsContainer>
     </MainContainer>
   );
+};
+
+ItemsDetailsContainer.propTypes = {
+  changedProduct: PropTypes.object.isRequired,
+  profile: PropTypes.object,
+  orders: PropTypes.array,
+  setOpenBasketModal: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {

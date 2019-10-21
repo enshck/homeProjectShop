@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import styled from "styled-components";
+import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import Header from "../../header";
@@ -55,6 +56,12 @@ const Items = props => {
       />
     </ItemsContainer>
   );
+};
+
+Items.propTypes = {
+  setGoodsList: PropTypes.func.isRequired,
+  profile: PropTypes.object,
+  setOrdersList: PropTypes.func.isRequired
 };
 
 const mapStateToProps = state => {
