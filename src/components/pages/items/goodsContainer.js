@@ -24,6 +24,7 @@ const SingleGoodContainer = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0 10px;
+  background: #fff;
   img {
     width: 80px;
     height: 100px;
@@ -42,7 +43,12 @@ const SingleGoodContainer = styled.div`
           height: 140px;
         }
   }
-    `}
+    `};
+  ${props =>
+    props.sortType === "list" &&
+    css`
+      margin: 10px;
+    `};
 `;
 
 const NameContainer = styled.div`
@@ -96,6 +102,7 @@ const GoodsRow = styled.div`
   }
   display: grid;
   grid-template-columns: repeat(4, 1fr);
+  grid-gap: 10px;
   width: 100%;
   justify-content: space-between;
   margin-top: 10px;
@@ -124,6 +131,8 @@ const GoodsContainer = props => {
     setOrders
   } = props;
   const [sortedList, setSortedList] = useState([]);
+
+  // console.log(sortType, "sort");
 
   useEffect(() => {
     let singleGoodsListArray = [];

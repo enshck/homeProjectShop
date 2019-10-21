@@ -32,7 +32,6 @@ const InfoContainer = styled.div`
 `;
 const PictureProduct = styled.div`
   width: 35%;
-  height: 50%;
   max-width: 450px;
   max-height: 600px;
   min-width: 200px;

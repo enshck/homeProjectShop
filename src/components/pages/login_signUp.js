@@ -23,6 +23,7 @@ const SignUp = props => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    phone: "",
     error: null
   });
 

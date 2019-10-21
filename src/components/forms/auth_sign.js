@@ -2,9 +2,13 @@ import React, { useState } from "react";
 import styled, { css } from "styled-components";
 import { NavLink } from "react-router-dom";
 
-import firebase, { authGoogleProvider } from "../../utils/firebase";
+import firebase, {
+  authGoogleProvider,
+  authFacebookProvider
+} from "../../utils/firebase";
 import google from "../../img/google.png";
-import phone from "../../img/phone.png";
+import facebookIcon from "../../img/facebook.png";
+import { errors } from "../../utils/errors";
 
 const FormMainContainer = styled.div`
   background: #fff;
@@ -16,6 +20,8 @@ const FormMainContainer = styled.div`
   border-radius: 2px;
   justify-content: flex-start;
   box-sizing: border-box;
+  padding-left: 20px;
+  padding-right: 20px;
 `;
 
 const SubmitButton = styled.div`
@@ -99,6 +105,7 @@ const StyledNavLink = styled(NavLink)`
 
 const ControlsContainer = styled.div`
   padding: 40px 60px 50px;
+  position: relative;
 `;
 
 const InputContainer = styled.div`
@@ -132,6 +139,23 @@ const SignUpForm = props => {
       ...{ [typeInput]: e.target.value }
     });
     setActiveInput(null);
+  };
+
+  const facebookAutorizeHandler = () => {
+    firebase
+      .auth()
+      .signInWithPopup(authFacebookProvider)
+      .then(result => {})
+      .catch(err => {
+        const error = errors[err.code];
+
+        if (error) {
+          setFormData({
+            ...formData,
+            error
+          });
+        }
+      });
   };
 
   return (
@@ -186,7 +210,11 @@ const SignUpForm = props => {
             alt={"google"}
             onClick={() => firebase.auth().signInWithPopup(authGoogleProvider)}
           />
-          <img src={phone} alt={"phone"} />
+          <img
+            src={facebookIcon}
+            alt={"facebook"}
+            onClick={facebookAutorizeHandler}
+          />
         </Social>
       </ControlsContainer>
       {formData.error && <ErrorMessage>{formData.error}</ErrorMessage>}
