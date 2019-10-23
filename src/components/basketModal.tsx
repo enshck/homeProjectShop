@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import { connect } from "react-redux";
-import PropTypes from "prop-types";
 
 import { setOrders } from "../store/actions";
 import firebase from "../utils/firebase";
@@ -137,8 +136,8 @@ const ControlInput = styled.input`
   caret-color: #00a046;
   color: #4d4b4b;
   outline: none;
-  ${props =>
-    props.warning &&
+  ${({ warning }: { warning?: boolean }) =>
+    warning &&
     css`
       border-color: red;
     `}
@@ -224,22 +223,56 @@ const SucessOrderContainer = styled.div`
   }
 `;
 
-const BasketModal = props => {
-  const { setOpenBasketModal, setOrders, orders, profile } = props;
-  const [summaryOrderPrice, setSummaryOrderPrice] = useState(0);
-  const [isFetching, setFetching] = useState(false);
-  const [orderStatus, setOrderStatus] = useState(false);
+export interface IGoodsData {
+  goodId: string;
+  goodName: string;
+  isSale: boolean;
+  parametrs: {
+    color: string;
+    internalMem: string;
+    ram: string;
+    sizeScreen: string;
+    weight: string;
+  };
+  pictureUrl: string;
+  price: string;
+}
+
+export interface IOrderElement {
+  count: number;
+  goodsData: IGoodsData;
+}
+
+export interface IProfile {
+  email: string;
+  displayName: string;
+  uid: string;
+}
+
+const BasketModal = ({
+  setOpenBasketModal,
+  setOrders,
+  orders,
+  profile
+}: {
+  setOpenBasketModal: (status: boolean) => void;
+  setOrders: (orders: IOrderElement[]) => void;
+  orders: IOrderElement[];
+  profile: IProfile;
+}) => {
+  const [summaryOrderPrice, setSummaryOrderPrice] = useState<number>(0);
+  const [isFetching, setFetching] = useState<boolean>(false);
+  const [orderStatus, setOrderStatus] = useState<boolean>(false);
 
   useEffect(() => {
-    let sum = 0;
-    orders.forEach(elem => {
-      const { goodsData, count } = elem;
-      sum = sum + goodsData.price * count;
+    let sum: number = 0;
+    orders.forEach(({ count, goodsData }: IOrderElement) => {
+      sum = sum + +goodsData.price * count;
     });
-    setSummaryOrderPrice(sum.toFixed(2));
+    setSummaryOrderPrice(+sum.toFixed(2));
   }, [orders]);
 
-  const updateOrderCountHandler = (newCount, order) => {
+  const updateOrderCountHandler = (newCount: number, order: IOrderElement) => {
     setFetching(true);
     if (newCount > 0 && newCount < 1000) {
       orders.forEach((elem, item) => {
@@ -264,7 +297,7 @@ const BasketModal = props => {
     }
   };
 
-  const deleteOrderHandler = order => {
+  const deleteOrderHandler = (order: IOrderElement) => {
     setFetching(true);
     const newOrdersList = orders.filter(
       elem => elem.goodsData.goodId !== order.goodsData.goodId
@@ -367,7 +400,7 @@ const BasketModal = props => {
                         warning={count < 1 || count > 999}
                         defaultValue={count}
                         onBlur={e =>
-                          updateOrderCountHandler(e.target.value, elem)
+                          updateOrderCountHandler(+e.target.value, elem)
                         }
                       />
                       <ControlButtons
@@ -377,7 +410,7 @@ const BasketModal = props => {
                       />
                     </CountContainer>
                     <PriceContainer>
-                      <h3>{(price * count).toFixed(2)} $</h3>
+                      <h3>{(+price * count).toFixed(2)} $</h3>
                     </PriceContainer>
                   </SingleGoodsContainer>
                 );
@@ -396,14 +429,7 @@ const BasketModal = props => {
   );
 };
 
-BasketModal.propTypes = {
-  setOpenBasketModal: PropTypes.func.isRequired,
-  setOrders: PropTypes.func.isRequired,
-  orders: PropTypes.array.isRequired,
-  profile: PropTypes.object.isRequired
-};
-
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   const { orders } = state.goodsReducers;
 
   return {
@@ -411,8 +437,8 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  setOrders: orders => dispatch(setOrders(orders))
+const mapDispatchToProps = (dispatch: any) => ({
+  setOrders: (orders: IOrderElement[]) => dispatch(setOrders(orders))
 });
 
 export default connect(

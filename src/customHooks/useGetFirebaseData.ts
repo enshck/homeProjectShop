@@ -2,13 +2,33 @@ import { useState } from "react";
 
 import firebase from "../utils/firebase";
 
-export const useGetFirebaseData = () => {
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [called, setCalled] = useState(false);
-  const [error, setError] = useState(false);
+interface IUseFirebaseDataProps {
+  collection: string;
+  singleDoc?: string;
+  actionHandler?: (data: any) => void;
+}
 
-  const handeleCall = async (attribute = {}) => {
+export const useGetFirebaseData = (): [
+  (data: IUseFirebaseDataProps) => void,
+  {
+    data: any;
+    loading: boolean;
+    called: boolean;
+    error: any;
+  }
+] => {
+  const [data, setData] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [called, setCalled] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+
+  const handeleCall = async (
+    attribute: IUseFirebaseDataProps = {
+      collection: "",
+      singleDoc: "",
+      actionHandler: () => {}
+    }
+  ) => {
     const { collection, singleDoc, actionHandler } = attribute;
 
     setCalled(true);

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import PropTypes from "prop-types";
 import styled from "styled-components";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
 
 import { useGetFirebaseData } from "../../../customHooks/useGetFirebaseData";
+import { IGoodsData, IProfile, IOrderElement } from "../../basketModal";
 import {
   setGoodsList,
   setOrders,
@@ -13,7 +13,7 @@ import {
 import Header from "../../header";
 import ArrowBack from "../../../img/arrowBack.png";
 import { signOutHandler } from "../../../utils/handlers";
-import ItemsDetailContainer from "../itemsDetails/itemsDetailsContainer";
+import ItemsDetailContainer from "./itemsDetailsContainer";
 
 const MainContainer = styled.div`
   position: absolute;
@@ -45,18 +45,28 @@ const ButtonBack = styled(Link)`
   }
 `;
 
-const ItemsDetail = props => {
-  const {
-    match,
-    setGoodsList,
-    goods,
-    profile,
-    setOrdersList,
-    isOpenBasketModal,
-    setOpenBasketModal
-  } = props;
-
-  const [changedProduct, changeProduct] = useState({
+const ItemsDetail = ({
+  match,
+  setGoodsList,
+  goods,
+  profile,
+  setOrdersList,
+  isOpenBasketModal,
+  setOpenBasketModal
+}: {
+  match: {
+    params: {
+      id: number;
+    };
+  };
+  setGoodsList: (goodsList: IGoodsData[]) => void;
+  goods: IGoodsData[];
+  profile: IProfile;
+  setOrdersList: (orders: IOrderElement[]) => void;
+  isOpenBasketModal: boolean;
+  setOpenBasketModal: (status: boolean) => void;
+}) => {
+  const [changedProduct, changeProduct] = useState<any>({
     parametrs: {}
   });
   const [getGoods, goodsData] = useGetFirebaseData();
@@ -78,10 +88,10 @@ const ItemsDetail = props => {
   }
 
   useEffect(() => {
-    goods.forEach(elem => {
+    goods.forEach((elem: { goodId: string }) => {
       const { goodId } = elem;
 
-      goodId === match.params.id && changeProduct(elem);
+      +goodId === match.params.id && changeProduct(elem);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goods]);
@@ -103,17 +113,7 @@ const ItemsDetail = props => {
   );
 };
 
-ItemsDetail.propTypes = {
-  match: PropTypes.object.isRequired,
-  setGoodsList: PropTypes.func.isRequired,
-  goods: PropTypes.array,
-  profile: PropTypes.object,
-  setOrdersList: PropTypes.func.isRequired,
-  isOpenBasketModal: PropTypes.bool.isRequired,
-  setOpenBasketModal: PropTypes.func.isRequired
-};
-
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   const { orders, goods, isOpenBasketModal } = state.goodsReducers;
 
   return {
@@ -123,10 +123,10 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  setGoodsList: goodsList => dispatch(setGoodsList(goodsList)),
-  setOrdersList: orders => dispatch(setOrders(orders)),
-  setOpenBasketModal: isOpen => dispatch(setOpenBasketModal(isOpen))
+const mapDispatchToProps = (dispatch: any) => ({
+  setGoodsList: (goodsList: IGoodsData[]) => dispatch(setGoodsList(goodsList)),
+  setOrdersList: (orders: IOrderElement[]) => dispatch(setOrders(orders)),
+  setOpenBasketModal: (isOpen: boolean) => dispatch(setOpenBasketModal(isOpen))
 });
 export default connect(
   mapStateToProps,

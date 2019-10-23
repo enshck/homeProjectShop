@@ -1,4 +1,4 @@
-export const errors = {
+export const errors: { [key: string]: string } = {
   "auth/invalid-email": "Вы ввели некоректную почту",
   "auth/user-not-found": "Пользователь с такой почтой не найден",
   "auth/wrong-password": "Вы ввели неверный пароль",

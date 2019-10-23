@@ -8,7 +8,7 @@ const goodsReducers = (
     orders: [],
     isOpenBasketModal: false
   },
-  action
+  action: any
 ) => {
   switch (action.type) {
     case types.SET_SORT_GOODS: {

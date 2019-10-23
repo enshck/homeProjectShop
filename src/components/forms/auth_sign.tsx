@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import styled, { css } from "styled-components";
 import { NavLink } from "react-router-dom";
 
@@ -58,8 +57,8 @@ const SignUpInput = styled.input`
   box-sizing: border-box;
   margin-top: 5px;
 
-  ${props =>
-    props.active &&
+  ${({ active }: { active: boolean }) =>
+    active &&
     css`
       border-color: #4680fe;
     `}
@@ -130,16 +129,34 @@ const Social = styled.div`
   }
 `;
 
-const SignUpForm = props => {
-  const { formData, setFormData, signUpHandler, type } = props;
-  const [activeInput, setActiveInput] = useState(null);
+interface IFormData {
+  email: string;
+  password: string;
+  phone: string;
+  error: any;
+}
 
-  const onBlur = (e, typeInput) => {
+interface ISignUpFormProps {
+  formData: IFormData;
+  setFormData: (formData: IFormData) => void;
+  signUpHandler: () => void;
+  type: string;
+}
+
+const SignUpForm = ({
+  formData,
+  setFormData,
+  signUpHandler,
+  type
+}: ISignUpFormProps) => {
+  const [activeInput, setActiveInput] = useState<string>("");
+
+  const onBlur = (e: any, typeInput: string) => {
     setFormData({
       ...formData,
       ...{ [typeInput]: e.target.value }
     });
-    setActiveInput(null);
+    setActiveInput("");
   };
 
   const facebookAutorizeHandler = () => {
@@ -221,13 +238,6 @@ const SignUpForm = props => {
       {formData.error && <ErrorMessage>{formData.error}</ErrorMessage>}
     </FormMainContainer>
   );
-};
-
-SignUpForm.propTypes = {
-  formData: PropTypes.object.isRequired,
-  setFormData: PropTypes.func.isRequired,
-  signUpHandler: PropTypes.func.isRequired,
-  type: PropTypes.string.isRequired
 };
 
 export default SignUpForm;

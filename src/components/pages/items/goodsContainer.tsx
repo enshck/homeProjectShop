@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { Link } from "react-router-dom";
+import { IGoodsData, IOrderElement, IProfile } from "../../basketModal";
 
 import { setOrders } from "../../../store/actions";
 import { buyButtonHandler } from "../../../utils/handlers";
@@ -11,8 +11,8 @@ const MainContainer = styled.div`
   overflow: auto;
   display: flex;
   flex-direction: column;
-  ${props =>
-    props.sortType === "grid" &&
+  ${({ sortType }: { sortType: String }) =>
+    sortType === "grid" &&
     css`
       flex-direction: row;
       overflow: visible;
@@ -33,8 +33,8 @@ const SingleGoodContainer = styled.div`
   border-top: 1px solid #eaeaea;
   border-left: 1px solid #eaeaea;
   padding: 15px;
-  ${props =>
-    props.sortType === "grid" &&
+  ${({ sortType }: { sortType: String }) =>
+    sortType === "grid" &&
     css`
       border: 1px solid #eaeaea
       flex-direction: column;
@@ -56,8 +56,8 @@ const NameContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 10px;
-  ${props =>
-    props.sortType === "grid" &&
+  ${({ sortType }: { sortType: String }) =>
+    sortType === "grid" &&
     css`
       align-items: center;
     `}
@@ -67,8 +67,8 @@ const InfoContainer = styled.div`
   display: flex;
   position: relative;
   align-items: center;
-  ${props =>
-    props.sortType === "grid" &&
+  ${({ sortType }: { sortType: String }) =>
+    sortType === "grid" &&
     css`
       flex-direction: column;
       align-items: center;
@@ -122,20 +122,26 @@ const DetailsButton = styled(Link)`
   text-decoration: none;
 `;
 
-const GoodsContainer = props => {
-  const {
-    goods,
-    sortType,
-    setOpenBasketModal,
-    orders,
-    profile,
-    setOrders
-  } = props;
-  const [sortedList, setSortedList] = useState([]);
+const GoodsContainer = ({
+  goods,
+  sortType,
+  setOpenBasketModal,
+  orders,
+  profile,
+  setOrders
+}: {
+  goods: IGoodsData[];
+  sortType: String;
+  setOpenBasketModal: (status: boolean) => void;
+  orders: IOrderElement[];
+  profile: IProfile;
+  setOrders: (orders: IOrderElement[]) => void;
+}) => {
+  const [sortedList, setSortedList] = useState<IGoodsData[][]>([]);
 
   useEffect(() => {
-    let singleGoodsListArray = [];
-    const result = [];
+    let singleGoodsListArray: IGoodsData[] = [];
+    const result: IGoodsData[][] = [];
 
     goods.forEach((elem, index) => {
       singleGoodsListArray.push(elem);
@@ -234,16 +240,7 @@ const GoodsContainer = props => {
   );
 };
 
-GoodsContainer.propTypes = {
-  goods: PropTypes.array.isRequired,
-  sortType: PropTypes.string.isRequired,
-  setOpenBasketModal: PropTypes.func.isRequired,
-  orders: PropTypes.array.isRequired,
-  profile: PropTypes.object,
-  setOrders: PropTypes.func.isRequired
-};
-
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   const { goods, sortType, orders } = state.goodsReducers;
 
   return {
@@ -253,8 +250,8 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  setOrders: orders => dispatch(setOrders(orders))
+const mapDispatchToProps = (dispatch: any) => ({
+  setOrders: (orders: IOrderElement[]) => dispatch(setOrders(orders))
 });
 
 export default connect(

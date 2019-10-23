@@ -2,18 +2,26 @@ import React from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 
 import SignUp from "../components/pages/login_signUp";
+import { IProfile } from "../components/basketModal";
 import Items from "../components/pages/items";
 import ItemsDetail from "../components/pages/itemsDetails";
 
-const PrivateRoute = props => {
-  const { render, component: Component, authStatus, profile, ...rest } = props;
-
+const PrivateRoute = ({
+  component: Component,
+  authStatus,
+  profile
+}: {
+  component: any;
+  authStatus: string;
+  profile: IProfile;
+  path: string;
+  exact?: boolean;
+}) => {
   return (
     <Route
-      {...rest}
       render={props => {
         if (authStatus === "autorize") {
-          return render ? render() : <Component {...props} profile={profile} />;
+          return <Component {...props} profile={profile} />;
         } else if (authStatus === "unautorize") {
           return (
             <Redirect
@@ -29,14 +37,21 @@ const PrivateRoute = props => {
   );
 };
 
-const PublicRoute = props => {
-  const { render, component: Component, authStatus, type, ...rest } = props;
+const PublicRoute = ({
+  component: Component,
+  authStatus,
+  type
+}: {
+  component: any;
+  authStatus: string;
+  path: string;
+  type: string;
+}) => {
   return (
     <Route
-      {...rest}
       render={props => {
         if (authStatus === "unautorize") {
-          return render ? render() : <Component {...props} type={type} />;
+          return <Component {...props} type={type} />;
         } else if (authStatus === "autorize") {
           return (
             <Redirect
@@ -52,7 +67,13 @@ const PublicRoute = props => {
   );
 };
 
-const Routes = ({ profile, authStatus }) => {
+const Routes = ({
+  profile,
+  authStatus
+}: {
+  profile: IProfile;
+  authStatus: string;
+}) => {
   return (
     <Switch>
       <Route

@@ -8,8 +8,8 @@ import "./style.css";
 import firebase from "../utils/firebase";
 
 const App = () => {
-  const [authStatus, setAuthStatus] = useState(null);
-  const [userData, setUserData] = useState(null);
+  const [authStatus, setAuthStatus] = useState<string>("");
+  const [userData, setUserData] = useState<any>(null);
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged(user => {

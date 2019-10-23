@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
 import ZoomablePicture from "../../zoomablePicture";
+import { IGoodsData, IProfile, IOrderElement } from "../../basketModal";
 import { setOrders, setOpenBasketModal } from "../../../store/actions";
 import { buyButtonHandler } from "../../../utils/handlers";
 
@@ -89,8 +89,17 @@ const ParametrsContainer = styled.ul`
   list-style: none;
 `;
 
-const ItemsDetailsContainer = props => {
-  const { changedProduct, profile, orders, setOpenBasketModal } = props;
+const ItemsDetailsContainer = ({
+  changedProduct,
+  profile,
+  orders,
+  setOpenBasketModal
+}: {
+  changedProduct: IGoodsData;
+  profile: IProfile;
+  orders: IOrderElement[];
+  setOpenBasketModal: (status: boolean) => void;
+}) => {
   const {
     goodId,
     goodName,
@@ -141,14 +150,7 @@ const ItemsDetailsContainer = props => {
   );
 };
 
-ItemsDetailsContainer.propTypes = {
-  changedProduct: PropTypes.object.isRequired,
-  profile: PropTypes.object,
-  orders: PropTypes.array,
-  setOpenBasketModal: PropTypes.func.isRequired
-};
-
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   const { orders, isOpenBasketModal } = state.goodsReducers;
 
   return {
@@ -157,9 +159,9 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  setOrdersList: orders => dispatch(setOrders(orders)),
-  setOpenBasketModal: isOpen => dispatch(setOpenBasketModal(isOpen))
+const mapDispatchToProps = (dispatch: any) => ({
+  setOrdersList: (orders: IOrderElement[]) => dispatch(setOrders(orders)),
+  setOpenBasketModal: (isOpen: boolean) => dispatch(setOpenBasketModal(isOpen))
 });
 export default connect(
   mapStateToProps,

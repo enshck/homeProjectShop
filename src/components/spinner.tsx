@@ -28,6 +28,6 @@ const SpinnerMainContainer = styled.div`
   animation: spin 1s infinite linear;
 `;
 
-const Spinner = props => <SpinnerMainContainer />;
+const Spinner = () => <SpinnerMainContainer />;
 
 export default Spinner;

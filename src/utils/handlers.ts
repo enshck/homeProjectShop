@@ -1,4 +1,5 @@
 import firebase from "./firebase";
+import { IOrderElement, IGoodsData, IProfile } from "../components/basketModal";
 
 export const signOutHandler = () => {
   firebase
@@ -10,7 +11,11 @@ export const signOutHandler = () => {
     });
 };
 
-export const getOrders = (userId, setOrdersHandler, setFetching) => {
+export const getOrders = (
+  userId: string,
+  setOrdersHandler: (data: any) => void,
+  setFetching?: (status: boolean) => void
+) => {
   firebase
     .firestore()
     .collection("orders")
@@ -28,6 +33,12 @@ export const buyButtonHandler = ({
   profile,
   setOrders,
   setOpenBasketModal
+}: {
+  orders: IOrderElement[];
+  singleGood: IGoodsData;
+  profile: IProfile;
+  setOrders: (orders: IOrderElement[]) => void;
+  setOpenBasketModal: (status: boolean) => void;
 }) => {
   const isCreated = orders.some(
     elem => elem.goodsData.goodId === singleGood.goodId

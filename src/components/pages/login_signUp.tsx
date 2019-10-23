@@ -1,7 +1,5 @@
 import React, { useState } from "react";
-import PropTypes from "prop-types";
 import styled from "styled-components";
-import { withRouter } from "react-router";
 
 import firebase from "../../utils/firebase";
 import SignUpForm from "../forms/auth_sign";
@@ -19,13 +17,20 @@ const MainContainer = styled.div`
   background: #f6f8fb;
 `;
 
-const SignUp = props => {
-  const { history, type } = props;
+const SignUp = ({
+  history,
+  type
+}: {
+  history: {
+    push: (path: string) => void;
+  };
+  type: string;
+}) => {
   const [formData, setFormData] = useState({
     email: "",
     password: "",
     phone: "",
-    error: null
+    error: ""
   });
 
   const signUpHandler = () => {
@@ -77,8 +82,6 @@ const SignUp = props => {
           formData={formData}
           setFormData={setFormData}
           signUpHandler={authHandler}
-          submitButtonText={"Авторизоватся"}
-          titleForm={"Авторизация"}
           type={type}
         />
       ) : (
@@ -86,8 +89,6 @@ const SignUp = props => {
           formData={formData}
           setFormData={setFormData}
           signUpHandler={signUpHandler}
-          submitButtonText={"Зарегистрироватся"}
-          titleForm={"Регистрация"}
           type={type}
         />
       )}
@@ -95,9 +96,4 @@ const SignUp = props => {
   );
 };
 
-SignUp.propTypes = {
-  history: PropTypes.object.isRequired,
-  type: PropTypes.string.isRequired
-};
-
-export default withRouter(SignUp);
+export default SignUp;

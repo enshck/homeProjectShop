@@ -1,9 +1,9 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import styled, { css } from "styled-components";
-import PropTypes from "prop-types";
 import { connect } from "react-redux";
 
+import { IProfile, IOrderElement } from "../components/basketModal";
 import gridImg from "../img/grid.png";
 import listImg from "../img/list.png";
 import basket from "../img/basket.png";
@@ -23,8 +23,8 @@ const SortContainer = styled.div`
   align-items: center;
   width: 220px;
   justify-content: space-between;
-  ${props =>
-    props.singleItem &&
+  ${({ singleItem }: { singleItem: boolean }) =>
+    singleItem &&
     css`
       width: 100px;
     `}
@@ -51,27 +51,38 @@ const CountOrders = styled.div`
   background-color: #fb3f4c;
 `;
 
-const Header = props => {
-  const {
-    signOutHandler,
-    sortType,
-    setTypeSort,
-    setOpenBasketModal,
-    isOpenBasketModal,
-    profile,
-    orders,
-    mode
-  } = props;
+interface IHeaderProps {
+  signOutHandler: () => void;
+  sortType: String;
+  setTypeSort: (type: string) => void;
+  setOpenBasketModal: (status: boolean) => void;
+  isOpenBasketModal: boolean;
+  profile: IProfile;
+  orders: IOrderElement[];
+  mode: String;
+}
 
+const Header = ({
+  signOutHandler,
+  sortType,
+  setTypeSort,
+  setOpenBasketModal,
+  isOpenBasketModal,
+  profile,
+  orders,
+  mode
+}: IHeaderProps) => {
+  const modalElement = document.getElementById("modal");
   return (
     <MainContainer>
       {isOpenBasketModal &&
+        modalElement &&
         ReactDOM.createPortal(
           <BasketModal
             setOpenBasketModal={setOpenBasketModal}
             profile={profile}
           />,
-          document.getElementById("modal")
+          modalElement
         )}
       {mode === "singleItem" ? (
         <h3>Детальный просмотр товара:</h3>
@@ -81,7 +92,6 @@ const Header = props => {
       <SortContainer singleItem={mode === "singleItem"}>
         <HeaderButton
           basket
-          marginRight={"10px"}
           onClick={() => orders.length > 0 && setOpenBasketModal(true)}
         >
           <CountOrders>{orders.length}</CountOrders>
@@ -115,18 +125,7 @@ const Header = props => {
   );
 };
 
-Header.propTypes = {
-  signOutHandler: PropTypes.func.isRequired,
-  sortType: PropTypes.string.isRequired,
-  setTypeSort: PropTypes.func.isRequired,
-  setOpenBasketModal: PropTypes.func.isRequired,
-  isOpenBasketModal: PropTypes.bool.isRequired,
-  profile: PropTypes.object,
-  orders: PropTypes.array.isRequired,
-  mode: PropTypes.string
-};
-
-const mapStateToProps = state => {
+const mapStateToProps = (state: any) => {
   const { sortType, orders } = state.goodsReducers;
 
   return {
@@ -135,8 +134,8 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => ({
-  setTypeSort: sortType => dispatch(setSortGoods(sortType))
+const mapDispatchToProps = (dispatch: any) => ({
+  setTypeSort: (sortType: string) => dispatch(setSortGoods(sortType))
 });
 
 export default connect(

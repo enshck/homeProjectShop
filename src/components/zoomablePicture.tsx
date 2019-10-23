@@ -6,9 +6,7 @@ const IMG = styled.img`
   height: 100%;
 `;
 
-const ZoomablePicture = props => {
-  const { url } = props;
-
+const ZoomablePicture = ({ url }: { url: string }) => {
   const [isHoverPicture, setStatusHoverPicture] = useState(false);
   const [xMouseCoordinate, setXMouseCoordinate] = useState(0);
   const [yMouseCoordinate, setYMouseCoordinate] = useState(0);
@@ -17,13 +15,13 @@ const ZoomablePicture = props => {
     transformOrigin: `${xMouseCoordinate}px ${yMouseCoordinate}px`,
     transform: "scale(2.5)"
   };
-  const mouseInPicture = e => {
+  const mouseInPicture = (e: any) => {
     setXMouseCoordinate(e.clientX - e.target.offsetLeft);
     setYMouseCoordinate(e.clientY - e.target.offsetTop);
     setStatusHoverPicture(true);
   };
 
-  const mouseLeavePicture = e => {
+  const mouseLeavePicture = (e: any) => {
     setStatusHoverPicture(false);
   };
 
