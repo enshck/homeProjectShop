@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import styled from "styled-components";
-import { connect } from "react-redux";
+import { useDispatch } from "react-redux";
 
 import Header from "../../header";
-import { IProfile, IOrderElement, IGoodsData } from "../../basketModal";
+import { IProfile } from "../../modals/basketModal";
 import { useGetFirebaseData } from "../../../customHooks/useGetFirebaseData";
 import { setGoodsList, setOrders } from "../../../store/actions";
 import GoodsContainer from "./goodsContainer";
@@ -20,23 +20,15 @@ const ItemsContainer = styled.div`
   background: #f5f5f5;
 `;
 
-const Items = ({
-  setGoodsList,
-  profile,
-  setOrdersList
-}: {
-  setGoodsList: (goodsList: IGoodsData[]) => void;
-  profile: IProfile;
-  setOrdersList: (orders: IOrderElement[]) => void;
-}) => {
+const Items = ({ profile }: { profile: IProfile }) => {
   const [getGoods, goodsData] = useGetFirebaseData();
   const [getOrders, ordersData] = useGetFirebaseData();
-  const [isOpenBasketModal, setOpenBasketModal] = useState(false);
+  const dispatch = useDispatch();
 
   if (!goodsData.called) {
     getGoods({
       collection: "goods",
-      actionHandler: setGoodsList
+      actionHandler: goods => dispatch(setGoodsList(goods))
     });
   }
 
@@ -44,7 +36,7 @@ const Items = ({
     getOrders({
       collection: "orders",
       singleDoc: profile.uid,
-      actionHandler: setOrdersList
+      actionHandler: orders => dispatch(setOrders(orders))
     });
   }
 
@@ -52,32 +44,12 @@ const Items = ({
     <ItemsContainer>
       <Header
         signOutHandler={signOutHandler}
-        isOpenBasketModal={isOpenBasketModal}
-        setOpenBasketModal={setOpenBasketModal}
         profile={profile}
         mode={"items"}
       />
-      <GoodsContainer
-        setOpenBasketModal={setOpenBasketModal}
-        profile={profile}
-      />
+      <GoodsContainer profile={profile} />
     </ItemsContainer>
   );
 };
-const mapStateToProps = (state: any) => {
-  const { orders } = state.goodsReducers;
 
-  return {
-    orders
-  };
-};
-
-const mapDispatchToProps = (dispatch: any) => ({
-  setGoodsList: (goodsList: IGoodsData[]) => dispatch(setGoodsList(goodsList)),
-  setOrdersList: (orders: IOrderElement[]) => dispatch(setOrders(orders))
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Items);
+export default Items;

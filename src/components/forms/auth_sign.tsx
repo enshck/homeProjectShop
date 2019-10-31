@@ -136,19 +136,17 @@ interface IFormData {
   error: any;
 }
 
-interface ISignUpFormProps {
-  formData: IFormData;
-  setFormData: (formData: IFormData) => void;
-  signUpHandler: () => void;
-  type: string;
-}
-
 const SignUpForm = ({
   formData,
   setFormData,
   signUpHandler,
   type
-}: ISignUpFormProps) => {
+}: {
+  formData: IFormData;
+  setFormData: (formData: IFormData) => void;
+  signUpHandler: () => void;
+  type: string;
+}) => {
   const [activeInput, setActiveInput] = useState<string>("");
 
   const onBlur = (e: any, typeInput: string) => {

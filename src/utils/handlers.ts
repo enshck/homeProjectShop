@@ -1,5 +1,11 @@
 import firebase from "./firebase";
-import { IOrderElement, IGoodsData, IProfile } from "../components/basketModal";
+import {
+  IOrderElement,
+  IGoodsData,
+  IProfile
+} from "../components/modals/basketModal";
+
+import { ISuccessOrders } from "../components/pages/adminPanel/ordersContainer";
 
 export const signOutHandler = () => {
   firebase
@@ -25,6 +31,19 @@ export const getOrders = (
       setOrdersHandler(elem.data());
       setFetching && setFetching(false);
     });
+};
+
+export const getSuccessOrders = async ({
+  handler
+}: {
+  handler: (data: ISuccessOrders[]) => void;
+}) => {
+  const collection = await firebase
+    .firestore()
+    .collection("successOrders")
+    .get();
+  const data: any = collection.docs.map(elem => elem.data());
+  handler(data);
 };
 
 export const buyButtonHandler = ({

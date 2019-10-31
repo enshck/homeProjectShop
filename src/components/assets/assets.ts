@@ -49,3 +49,35 @@ export const HeaderButton = styled.div`
         }
       `};
 `;
+
+export const StatusContainer = styled.div`
+  padding: 10px;
+  width: 120px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  margin-top: 5px;
+  cursor: pointer;
+  color: #fff;
+  ${({ typeContainer }: { typeContainer: String }) =>
+    typeContainer === "ordered" &&
+    css`
+      background: #3d9ec8;
+    `};
+  ${({ typeContainer }: { typeContainer: String }) =>
+    typeContainer === "cancelled" &&
+    css`
+      background: #da5f57;
+    `};
+  ${({ typeContainer }: { typeContainer: String }) =>
+    typeContainer === "delivered" &&
+    css`
+      background: #279240;
+    `};
+  ${({ typeContainer }: { typeContainer: String }) =>
+    typeContainer === "paidFor" &&
+    css`
+      background: #86a760;
+    `};
+`;

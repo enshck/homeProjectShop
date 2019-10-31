@@ -2,14 +2,16 @@ import React from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
 
 import SignUp from "../components/pages/login_signUp";
-import { IProfile } from "../components/basketModal";
+import AdminPanel from "../components/pages/adminPanel";
+import { IProfile } from "../components/modals/basketModal";
 import Items from "../components/pages/items";
 import ItemsDetail from "../components/pages/itemsDetails";
 
 const PrivateRoute = ({
   component: Component,
   authStatus,
-  profile
+  profile,
+  ...rest
 }: {
   component: any;
   authStatus: string;
@@ -19,6 +21,7 @@ const PrivateRoute = ({
 }) => {
   return (
     <Route
+      {...rest}
       render={props => {
         if (authStatus === "autorize") {
           return <Component {...props} profile={profile} />;
@@ -37,10 +40,46 @@ const PrivateRoute = ({
   );
 };
 
+const ProtectedRoute = ({
+  component: Component,
+  authStatus,
+  profile,
+  role,
+  ...rest
+}: {
+  component: any;
+  authStatus: string;
+  profile: IProfile;
+  role: string | null;
+  path: string;
+  exact?: boolean;
+}) => {
+  return (
+    <Route
+      {...rest}
+      render={props => {
+        if (role === "admin") {
+          return <Component {...props} profile={profile} />;
+        } else if (role === "user") {
+          return (
+            <Redirect
+              to={{
+                pathname: "/items",
+                state: { from: props.location }
+              }}
+            />
+          );
+        }
+      }}
+    />
+  );
+};
+
 const PublicRoute = ({
   component: Component,
   authStatus,
-  type
+  type,
+  ...rest
 }: {
   component: any;
   authStatus: string;
@@ -49,6 +88,7 @@ const PublicRoute = ({
 }) => {
   return (
     <Route
+      {...rest}
       render={props => {
         if (authStatus === "unautorize") {
           return <Component {...props} type={type} />;
@@ -69,10 +109,12 @@ const PublicRoute = ({
 
 const Routes = ({
   profile,
-  authStatus
+  authStatus,
+  role
 }: {
   profile: IProfile;
   authStatus: string;
+  role: string | null;
 }) => {
   return (
     <Switch>
@@ -103,6 +145,11 @@ const Routes = ({
         component={ItemsDetail}
         path={`/items/:id`}
         {...{ authStatus, profile }}
+      />
+      <ProtectedRoute
+        component={AdminPanel}
+        path="/adminPanel"
+        {...{ authStatus, type: "auth", profile, role }}
       />
 
       <Route render={() => <div>Not found</div>} />

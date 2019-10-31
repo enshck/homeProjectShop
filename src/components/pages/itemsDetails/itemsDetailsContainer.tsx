@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { IOrdersReducers } from "../../../utils/interfaces";
 
 import ZoomablePicture from "../../zoomablePicture";
-import { IGoodsData, IProfile, IOrderElement } from "../../basketModal";
+import { IGoodsData, IProfile, IOrderElement } from "../../modals/basketModal";
 import { setOrders, setOpenBasketModal } from "../../../store/actions";
 import { buyButtonHandler } from "../../../utils/handlers";
 
@@ -91,14 +92,10 @@ const ParametrsContainer = styled.ul`
 
 const ItemsDetailsContainer = ({
   changedProduct,
-  profile,
-  orders,
-  setOpenBasketModal
+  profile
 }: {
   changedProduct: IGoodsData;
   profile: IProfile;
-  orders: IOrderElement[];
-  setOpenBasketModal: (status: boolean) => void;
 }) => {
   const {
     goodId,
@@ -109,6 +106,10 @@ const ItemsDetailsContainer = ({
     parametrs
   } = changedProduct;
   const { color, internalMem, ram, sizeScreen, weight } = parametrs;
+  const dispatch = useDispatch();
+  const orders = useSelector<IOrdersReducers, IOrderElement[]>(
+    state => state.orders
+  );
 
   return (
     <MainContainer>
@@ -130,7 +131,8 @@ const ItemsDetailsContainer = ({
                 singleGood: changedProduct,
                 profile,
                 setOrders,
-                setOpenBasketModal
+                setOpenBasketModal: status =>
+                  dispatch(setOpenBasketModal(status))
               });
             }}
           >
@@ -149,21 +151,4 @@ const ItemsDetailsContainer = ({
     </MainContainer>
   );
 };
-
-const mapStateToProps = (state: any) => {
-  const { orders, isOpenBasketModal } = state.goodsReducers;
-
-  return {
-    orders,
-    isOpenBasketModal
-  };
-};
-
-const mapDispatchToProps = (dispatch: any) => ({
-  setOrdersList: (orders: IOrderElement[]) => dispatch(setOrders(orders)),
-  setOpenBasketModal: (isOpen: boolean) => dispatch(setOpenBasketModal(isOpen))
-});
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ItemsDetailsContainer);
+export default ItemsDetailsContainer;

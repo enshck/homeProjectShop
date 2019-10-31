@@ -1,15 +1,20 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import styled, { css } from "styled-components";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  ISortTypeReducers,
+  IOrdersReducers,
+  IIsOpenBasketModalReducers
+} from "../utils/interfaces";
 
-import { IProfile, IOrderElement } from "../components/basketModal";
+import { IProfile, IOrderElement } from "./modals/basketModal";
 import gridImg from "../img/grid.png";
 import listImg from "../img/list.png";
 import basket from "../img/basket.png";
-import { setSortGoods } from "../store/actions";
-import { HeaderButton } from "./assets";
-import BasketModal from "./basketModal";
+import { setSortGoods, setOpenBasketModal } from "../store/actions";
+import { HeaderButton } from "./assets/assets";
+import BasketModal from "./modals/basketModal";
 
 const MainContainer = styled.div`
   border-bottom: 1px solid #cdd2d5;
@@ -23,8 +28,14 @@ const SortContainer = styled.div`
   align-items: center;
   width: 220px;
   justify-content: space-between;
-  ${({ singleItem }: { singleItem: boolean }) =>
-    singleItem &&
+  ${({
+    singleItem,
+    adminPanel
+  }: {
+    singleItem: boolean;
+    adminPanel: boolean;
+  }) =>
+    (singleItem || adminPanel) &&
     css`
       width: 100px;
     `}
@@ -51,58 +62,57 @@ const CountOrders = styled.div`
   background-color: #fb3f4c;
 `;
 
-interface IHeaderProps {
-  signOutHandler: () => void;
-  sortType: String;
-  setTypeSort: (type: string) => void;
-  setOpenBasketModal: (status: boolean) => void;
-  isOpenBasketModal: boolean;
-  profile: IProfile;
-  orders: IOrderElement[];
-  mode: String;
-}
-
 const Header = ({
   signOutHandler,
-  sortType,
-  setTypeSort,
-  setOpenBasketModal,
-  isOpenBasketModal,
   profile,
-  orders,
   mode
-}: IHeaderProps) => {
+}: {
+  signOutHandler: () => void;
+  profile: IProfile;
+  mode: String;
+}) => {
   const modalElement = document.getElementById("modal");
+  const sortType = useSelector<ISortTypeReducers, string>(
+    state => state.sortType
+  );
+  const orders = useSelector<IOrdersReducers, IOrderElement[]>(
+    state => state.orders
+  );
+  const isOpenBasketModal = useSelector<IIsOpenBasketModalReducers, boolean>(
+    state => state.isOpenBasketModal
+  );
+  const dispatch = useDispatch();
+
   return (
     <MainContainer>
-      {isOpenBasketModal &&
-        modalElement &&
-        ReactDOM.createPortal(
-          <BasketModal
-            setOpenBasketModal={setOpenBasketModal}
-            profile={profile}
-          />,
-          modalElement
-        )}
+      {modalElement &&
+        ReactDOM.createPortal(<BasketModal profile={profile} />, modalElement)}
       {mode === "singleItem" ? (
         <h3>Детальный просмотр товара:</h3>
+      ) : mode === "adminPanel" ? (
+        <h3>Панель администратора</h3>
       ) : (
         <h3>Товары:</h3>
       )}
-      <SortContainer singleItem={mode === "singleItem"}>
+      <SortContainer
+        singleItem={mode === "singleItem"}
+        adminPanel={mode === "adminPanel"}
+      >
         <HeaderButton
           basket
-          onClick={() => orders.length > 0 && setOpenBasketModal(true)}
+          onClick={() =>
+            orders.length > 0 && dispatch(setOpenBasketModal(true))
+          }
         >
           <CountOrders>{orders.length}</CountOrders>
           <img src={basket} alt={"basket"} />
         </HeaderButton>
-        {mode !== "singleItem" && (
+        {mode !== "singleItem" && mode !== "adminPanel" && (
           <SortButtonsContainer>
             <HeaderButton
               sortButton
               active={sortType === "grid"}
-              onClick={() => setTypeSort("grid")}
+              onClick={() => dispatch(setSortGoods("grid"))}
             >
               <img src={gridImg} alt={"grid"} />
             </HeaderButton>
@@ -110,7 +120,7 @@ const Header = ({
             <HeaderButton
               sortButton
               active={sortType === "list"}
-              onClick={() => setTypeSort("list")}
+              onClick={() => dispatch(setSortGoods("list"))}
             >
               <img src={listImg} alt={"list"} />
             </HeaderButton>
@@ -125,20 +135,4 @@ const Header = ({
   );
 };
 
-const mapStateToProps = (state: any) => {
-  const { sortType, orders } = state.goodsReducers;
-
-  return {
-    sortType,
-    orders
-  };
-};
-
-const mapDispatchToProps = (dispatch: any) => ({
-  setTypeSort: (sortType: string) => dispatch(setSortGoods(sortType))
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(Header);
+export default Header;

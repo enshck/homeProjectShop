@@ -1,5 +1,6 @@
 import types from "./types";
-import { IOrderElement, IGoodsData } from "../components/basketModal";
+import { IOrderElement, IGoodsData } from "../components/modals/basketModal";
+import { ISuccessOrders } from "../components/pages/adminPanel/ordersContainer";
 
 export const setSortGoods = (sortType: string) => ({
   type: types.SET_SORT_GOODS,
@@ -19,4 +20,9 @@ export const setOrders = (orders: IOrderElement[]) => ({
 export const setOpenBasketModal = (isOpen: boolean) => ({
   type: types.SET_OPEN_MODAL_STATUS,
   isOpen
+});
+
+export const setAdminOrders = (adminOrders: ISuccessOrders[]) => ({
+  type: types.SET_ADMIN_ORDERS,
+  adminOrders
 });

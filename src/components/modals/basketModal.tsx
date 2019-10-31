@@ -1,28 +1,36 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
-import { connect } from "react-redux";
+import { connect, useDispatch, useSelector } from "react-redux";
+import moment from "moment";
 
-import { setOrders } from "../store/actions";
-import firebase from "../utils/firebase";
-import close from "../img/close.png";
-import plus from "../img/plus.png";
-import minus from "../img/minus.png";
-import Spinner from "./spinner";
-import deleteIcon from "../img/delete.png";
-import successIcon from "../img/successIcon.png";
-import { getOrders } from "../utils/handlers";
+import { setOrders, setOpenBasketModal } from "../../store/actions";
+import {
+  IOrdersReducers,
+  IIsOpenBasketModalReducers
+} from "../../utils/interfaces";
+import firebase from "../../utils/firebase";
+import close from "../../img/close.png";
+import plus from "../../img/plus.png";
+import minus from "../../img/minus.png";
+import Spinner from "../spinner";
+import deleteIcon from "../../img/delete.png";
+import successIcon from "../../img/successIcon.png";
+import { getOrders } from "../../utils/handlers";
 
 const MainModalContainer = styled.div`
   width: 100%;
   height: 100vh;
   z-index: 900;
   position: fixed;
+  overflow: hidden;
   top: 0;
   left: 0;
   display: flex;
   justify-content: center;
   align-items: center;
+  visibility: hidden;
   background-color: rgba(0, 0, 0, 0.5);
+  transition: 0.5s;
   & ::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #f5f5f5;
@@ -35,6 +43,12 @@ const MainModalContainer = styled.div`
   & ::-webkit-scrollbar-thumb {
     background-color: grey;
   }
+
+  ${({ isOpenModal }: { isOpenModal: boolean }) =>
+    isOpenModal &&
+    css`
+      visibility: visible;
+    `};
 `;
 
 const ModalContent = styled.div`
@@ -49,7 +63,7 @@ const ModalContent = styled.div`
 
 const CloseButton = styled.img`
   position: absolute;
-  top: -50px;
+  top: 0px;
   right: 5px;
   cursor: pointer;
 `;
@@ -79,11 +93,19 @@ const ProductPicture = styled.img`
 const ModalContainer = styled.div`
   position: relative;
   width: 80%;
-  height: 80vh;
+  height: 0;
   max-width: 980px;
   display: flex;
   align-items: center;
   justify-content: center;
+  transition: 0.5s;
+  overflow: hidden;
+  ${({ isOpenModal }: { isOpenModal: boolean }) =>
+    isOpenModal &&
+    css`
+      /* visibility: visible; */
+      height: 80vh;
+    `};
 `;
 
 const CountContainer = styled.div`
@@ -145,7 +167,7 @@ const ControlInput = styled.input`
 
 const SummaryOrder = styled.div`
   position: absolute;
-  bottom: -60px;
+  bottom: 0px;
   left: 0;
   background: #fef2b8;
   width: 100%;
@@ -247,22 +269,22 @@ export interface IProfile {
   email: string;
   displayName: string;
   uid: string;
+  phoneNumber: string;
 }
 
-const BasketModal = ({
-  setOpenBasketModal,
-  setOrders,
-  orders,
-  profile
-}: {
-  setOpenBasketModal: (status: boolean) => void;
-  setOrders: (orders: IOrderElement[]) => void;
-  orders: IOrderElement[];
-  profile: IProfile;
-}) => {
+const BasketModal = ({ profile }: { profile: IProfile }) => {
   const [summaryOrderPrice, setSummaryOrderPrice] = useState<number>(0);
   const [isFetching, setFetching] = useState<boolean>(false);
   const [orderStatus, setOrderStatus] = useState<boolean>(false);
+  const dispatch = useDispatch();
+
+  const orders = useSelector<IOrdersReducers, IOrderElement[]>(
+    state => state.orders
+  );
+
+  const isOpenBasketModal = useSelector<IIsOpenBasketModalReducers, boolean>(
+    state => state.isOpenBasketModal
+  );
 
   useEffect(() => {
     let sum: number = 0;
@@ -289,11 +311,19 @@ const BasketModal = ({
           ordersData: orders
         })
         .then(result => {
-          getOrders(profile.uid, setOrders, setFetching);
+          getOrders(
+            profile.uid,
+            orders => dispatch(setOrders(orders)),
+            setFetching
+          );
         })
         .catch(err => console.log(err));
     } else {
-      getOrders(profile.uid, setOrders, setFetching);
+      getOrders(
+        profile.uid,
+        orders => dispatch(setOrders(orders)),
+        setFetching
+      );
     }
   };
 
@@ -310,7 +340,11 @@ const BasketModal = ({
         ordersData: newOrdersList
       })
       .then(result => {
-        getOrders(profile.uid, setOrders, setFetching);
+        getOrders(
+          profile.uid,
+          orders => dispatch(setOrders(orders)),
+          setFetching
+        );
       })
       .catch(err => console.log(err));
   };
@@ -320,7 +354,11 @@ const BasketModal = ({
       .firestore()
       .collection("successOrders")
       .add({
-        orders
+        orders,
+        status: "ordered",
+        date: moment().format("YYYY-MM-DD"),
+        summaryOrder: summaryOrderPrice,
+        userName: profile.displayName || profile.email || profile.phoneNumber
       })
       .then(() => {
         firebase
@@ -329,7 +367,7 @@ const BasketModal = ({
           .doc(profile.uid)
           .delete()
           .then(() => {
-            setOrders([]);
+            dispatch(setOrders([]));
             setOrderStatus(true);
           })
           .catch(err => {});
@@ -339,12 +377,12 @@ const BasketModal = ({
 
   if (orderStatus) {
     return (
-      <MainModalContainer>
-        <ModalContainer>
+      <MainModalContainer isOpenModal={isOpenBasketModal}>
+        <ModalContainer isOpenModal={isOpenBasketModal}>
           <CloseButton
             src={close}
             alt={"close"}
-            onClick={() => setOpenBasketModal(false)}
+            onClick={() => dispatch(setOpenBasketModal(false))}
           />
           <ModalContent>
             <SucessOrderContainer>
@@ -360,12 +398,12 @@ const BasketModal = ({
   }
 
   return (
-    <MainModalContainer>
-      <ModalContainer>
+    <MainModalContainer isOpenModal={isOpenBasketModal}>
+      <ModalContainer isOpenModal={isOpenBasketModal}>
         <CloseButton
           src={close}
           alt={"close"}
-          onClick={() => setOpenBasketModal(false)}
+          onClick={() => dispatch(setOpenBasketModal(false))}
         />
         <ModalContent>
           {isFetching ? (
@@ -429,19 +467,4 @@ const BasketModal = ({
   );
 };
 
-const mapStateToProps = (state: any) => {
-  const { orders } = state.goodsReducers;
-
-  return {
-    orders
-  };
-};
-
-const mapDispatchToProps = (dispatch: any) => ({
-  setOrders: (orders: IOrderElement[]) => dispatch(setOrders(orders))
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(BasketModal);
+export default BasketModal;

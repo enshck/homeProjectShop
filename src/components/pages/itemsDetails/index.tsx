@@ -1,15 +1,12 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
-import { connect } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { IGoodsReducers } from "../../../utils/interfaces";
 
 import { useGetFirebaseData } from "../../../customHooks/useGetFirebaseData";
-import { IGoodsData, IProfile, IOrderElement } from "../../basketModal";
-import {
-  setGoodsList,
-  setOrders,
-  setOpenBasketModal
-} from "../../../store/actions";
+import { IGoodsData, IProfile } from "../../modals/basketModal";
+import { setGoodsList, setOrders } from "../../../store/actions";
 import Header from "../../header";
 import ArrowBack from "../../../img/arrowBack.png";
 import { signOutHandler } from "../../../utils/handlers";
@@ -47,35 +44,27 @@ const ButtonBack = styled(Link)`
 
 const ItemsDetail = ({
   match,
-  setGoodsList,
-  goods,
-  profile,
-  setOrdersList,
-  isOpenBasketModal,
-  setOpenBasketModal
+  profile
 }: {
   match: {
     params: {
-      id: number;
+      id: string;
     };
   };
-  setGoodsList: (goodsList: IGoodsData[]) => void;
-  goods: IGoodsData[];
   profile: IProfile;
-  setOrdersList: (orders: IOrderElement[]) => void;
-  isOpenBasketModal: boolean;
-  setOpenBasketModal: (status: boolean) => void;
 }) => {
   const [changedProduct, changeProduct] = useState<any>({
     parametrs: {}
   });
   const [getGoods, goodsData] = useGetFirebaseData();
   const [getOrders, ordersData] = useGetFirebaseData();
+  const dispatch = useDispatch();
+  const goods = useSelector<IGoodsReducers, IGoodsData[]>(state => state.goods);
 
   if (!goodsData.called) {
     getGoods({
       collection: "goods",
-      actionHandler: setGoodsList
+      actionHandler: goods => dispatch(setGoodsList(goods))
     });
   }
 
@@ -83,7 +72,7 @@ const ItemsDetail = ({
     getOrders({
       collection: "orders",
       singleDoc: profile.uid,
-      actionHandler: setOrdersList
+      actionHandler: orders => dispatch(setOrders(orders))
     });
   }
 
@@ -91,7 +80,7 @@ const ItemsDetail = ({
     goods.forEach((elem: { goodId: string }) => {
       const { goodId } = elem;
 
-      +goodId === match.params.id && changeProduct(elem);
+      goodId === match.params.id && changeProduct(elem);
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [goods]);
@@ -103,8 +92,6 @@ const ItemsDetail = ({
       </ButtonBack>
       <Header
         signOutHandler={signOutHandler}
-        isOpenBasketModal={isOpenBasketModal}
-        setOpenBasketModal={setOpenBasketModal}
         profile={profile}
         mode={"singleItem"}
       />
@@ -113,22 +100,4 @@ const ItemsDetail = ({
   );
 };
 
-const mapStateToProps = (state: any) => {
-  const { orders, goods, isOpenBasketModal } = state.goodsReducers;
-
-  return {
-    orders,
-    goods,
-    isOpenBasketModal
-  };
-};
-
-const mapDispatchToProps = (dispatch: any) => ({
-  setGoodsList: (goodsList: IGoodsData[]) => dispatch(setGoodsList(goodsList)),
-  setOrdersList: (orders: IOrderElement[]) => dispatch(setOrders(orders)),
-  setOpenBasketModal: (isOpen: boolean) => dispatch(setOpenBasketModal(isOpen))
-});
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(ItemsDetail);
+export default ItemsDetail;

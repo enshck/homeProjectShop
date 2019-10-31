@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
-import { connect } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { IGoodsData, IOrderElement, IProfile } from "../../basketModal";
 
-import { setOrders } from "../../../store/actions";
+import { IGoodsData, IOrderElement, IProfile } from "../../modals/basketModal";
+import {
+  IGoodsReducers,
+  ISortTypeReducers,
+  IOrdersReducers
+} from "../../../utils/interfaces";
+import { setOrders, setOpenBasketModal } from "../../../store/actions";
 import { buyButtonHandler } from "../../../utils/handlers";
 
 const MainContainer = styled.div`
@@ -87,7 +92,8 @@ const ControlContainer = styled.div`
 
 const ButtonBuy = styled.div`
   background: #00a046;
-  padding: 5px 50px;
+  padding: 8px 20px;
+  font-size: 24px;
   border-radius: 5px;
   margin-top: 5px;
   color: #fff;
@@ -114,30 +120,32 @@ const DetailsButton = styled(Link)`
   padding-right: 8px;
   font-size: 16px;
   line-height: 24px;
-  background-color: #ffa900;
-  color: #fff;
+  color: #000;
+  text-decoration: underline;
   border-radius: 8px;
   margin-top: 5px;
   cursor: pointer;
-  text-decoration: none;
 `;
 
-const GoodsContainer = ({
-  goods,
-  sortType,
-  setOpenBasketModal,
-  orders,
-  profile,
-  setOrders
-}: {
-  goods: IGoodsData[];
-  sortType: String;
-  setOpenBasketModal: (status: boolean) => void;
-  orders: IOrderElement[];
-  profile: IProfile;
-  setOrders: (orders: IOrderElement[]) => void;
-}) => {
+const SaleContainer = styled.div`
+  padding: 5px 12px;
+  background: #fb3f4c;
+  color: #fff;
+  border-radius: 5px;
+`;
+
+const GoodsContainer = ({ profile }: { profile: IProfile }) => {
   const [sortedList, setSortedList] = useState<IGoodsData[][]>([]);
+  const goods = useSelector<IGoodsReducers, IGoodsData[]>(state => state.goods);
+  const sortType = useSelector<ISortTypeReducers, string>(
+    state => state.sortType
+  );
+  const orders = useSelector<IOrdersReducers, IOrderElement[]>(
+    state => state.orders
+  );
+  const dispatch = useDispatch();
+
+  console.log(goods, "goods");
 
   useEffect(() => {
     let singleGoodsListArray: IGoodsData[] = [];
@@ -174,7 +182,7 @@ const GoodsContainer = ({
                   </InfoContainer>
                   <ControlContainer>
                     <h1>${parseFloat(price).toFixed(2)}</h1>
-                    {isSale && <p>SALE</p>}
+                    {isSale && <SaleContainer>SALE</SaleContainer>}
                     <DetailsButton to={`/items/${goodId}`}>
                       Подробнее
                     </DetailsButton>
@@ -184,8 +192,9 @@ const GoodsContainer = ({
                           orders: orders,
                           singleGood: elem,
                           profile,
-                          setOrders,
-                          setOpenBasketModal
+                          setOrders: orders => dispatch(setOrders(orders)),
+                          setOpenBasketModal: status =>
+                            dispatch(setOpenBasketModal(status))
                         })
                       }
                     >
@@ -217,7 +226,7 @@ const GoodsContainer = ({
             </InfoContainer>
             <ControlContainer>
               <h1>${parseFloat(price).toFixed(2)}</h1>
-              {isSale && <p>SALE</p>}
+              {isSale && <SaleContainer>SALE</SaleContainer>}
               <DetailsButton to={`/items/${goodId}`}>Подробнее</DetailsButton>
               <ButtonBuy
                 onClick={() =>
@@ -226,7 +235,8 @@ const GoodsContainer = ({
                     singleGood: elem,
                     profile,
                     setOrders,
-                    setOpenBasketModal
+                    setOpenBasketModal: status =>
+                      dispatch(setOpenBasketModal(status))
                   })
                 }
               >
@@ -240,21 +250,4 @@ const GoodsContainer = ({
   );
 };
 
-const mapStateToProps = (state: any) => {
-  const { goods, sortType, orders } = state.goodsReducers;
-
-  return {
-    goods,
-    sortType,
-    orders
-  };
-};
-
-const mapDispatchToProps = (dispatch: any) => ({
-  setOrders: (orders: IOrderElement[]) => dispatch(setOrders(orders))
-});
-
-export default connect(
-  mapStateToProps,
-  mapDispatchToProps
-)(GoodsContainer);
+export default GoodsContainer;
