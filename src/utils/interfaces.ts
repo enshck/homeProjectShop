@@ -20,3 +20,7 @@ export interface IAdminOrdersReducers {
 export interface IIsOpenBasketModalReducers {
   isOpenBasketModal: boolean;
 }
+
+export interface IErrorsObject {
+  [key: string]: string;
+}

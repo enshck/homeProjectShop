@@ -7,6 +7,7 @@ import {
   IOrdersReducers,
   IIsOpenBasketModalReducers
 } from "../utils/interfaces";
+import { Link } from "react-router-dom";
 
 import { IProfile, IOrderElement } from "./modals/basketModal";
 import gridImg from "../img/grid.png";
@@ -15,6 +16,7 @@ import basket from "../img/basket.png";
 import { setSortGoods, setOpenBasketModal } from "../store/actions";
 import { HeaderButton } from "./assets/assets";
 import BasketModal from "./modals/basketModal";
+import AdminPanelIcon from "../img/adminPanel.png";
 
 const MainContainer = styled.div`
   border-bottom: 1px solid #cdd2d5;
@@ -62,14 +64,34 @@ const CountOrders = styled.div`
   background-color: #fb3f4c;
 `;
 
+const ButtonLink = styled(Link)`
+  background: #3b3e47;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 3px;
+  position: relative;
+  cursor: pointer;
+  width: 30px;
+  height: 30px;
+  margin-left: 10px;
+  img {
+    width: 80%;
+    height: 80%;
+  }
+`;
+
 const Header = ({
   signOutHandler,
   profile,
-  mode
+  mode,
+  role
 }: {
   signOutHandler: () => void;
   profile: IProfile;
   mode: String;
+  role?: string | null;
 }) => {
   const modalElement = document.getElementById("modal");
   const sortType = useSelector<ISortTypeReducers, string>(
@@ -124,6 +146,11 @@ const Header = ({
             >
               <img src={listImg} alt={"list"} />
             </HeaderButton>
+            {role === "admin" && (
+              <ButtonLink to={"adminPanel"}>
+                <img src={AdminPanelIcon} alt={"linkIcon"} />
+              </ButtonLink>
+            )}
           </SortButtonsContainer>
         )}
 

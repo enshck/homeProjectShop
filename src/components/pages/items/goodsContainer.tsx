@@ -145,8 +145,6 @@ const GoodsContainer = ({ profile }: { profile: IProfile }) => {
   );
   const dispatch = useDispatch();
 
-  console.log(goods, "goods");
-
   useEffect(() => {
     let singleGoodsListArray: IGoodsData[] = [];
     const result: IGoodsData[][] = [];

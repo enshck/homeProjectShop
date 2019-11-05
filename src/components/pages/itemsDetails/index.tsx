@@ -44,7 +44,8 @@ const ButtonBack = styled(Link)`
 
 const ItemsDetail = ({
   match,
-  profile
+  profile,
+  role
 }: {
   match: {
     params: {
@@ -52,6 +53,7 @@ const ItemsDetail = ({
     };
   };
   profile: IProfile;
+  role: string | null;
 }) => {
   const [changedProduct, changeProduct] = useState<any>({
     parametrs: {}
@@ -94,6 +96,7 @@ const ItemsDetail = ({
         signOutHandler={signOutHandler}
         profile={profile}
         mode={"singleItem"}
+        role={role}
       />
       <ItemsDetailContainer changedProduct={changedProduct} profile={profile} />
     </MainContainer>

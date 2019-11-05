@@ -55,12 +55,7 @@ export const useGetFirebaseData = (): [
             .get();
 
           if (!doc.empty) {
-            const docData = await doc.docs.map(item => {
-              return {
-                ...item.data(),
-                ...{ id: item.ref.id }
-              };
-            });
+            const docData = await doc.docs.map(item => item.data());
             setData(docData);
             actionHandler && actionHandler(docData);
           } else {

@@ -11,11 +11,13 @@ const PrivateRoute = ({
   component: Component,
   authStatus,
   profile,
+  role,
   ...rest
 }: {
   component: any;
   authStatus: string;
   profile: IProfile;
+  role: string | null;
   path: string;
   exact?: boolean;
 }) => {
@@ -24,7 +26,7 @@ const PrivateRoute = ({
       {...rest}
       render={props => {
         if (authStatus === "autorize") {
-          return <Component {...props} profile={profile} />;
+          return <Component {...props} profile={profile} role={role} />;
         } else if (authStatus === "unautorize") {
           return (
             <Redirect
@@ -139,12 +141,12 @@ const Routes = ({
         exact
         component={Items}
         path="/items"
-        {...{ authStatus, profile }}
+        {...{ authStatus, profile, role }}
       />
       <PrivateRoute
         component={ItemsDetail}
         path={`/items/:id`}
-        {...{ authStatus, profile }}
+        {...{ authStatus, profile, role }}
       />
       <ProtectedRoute
         component={AdminPanel}

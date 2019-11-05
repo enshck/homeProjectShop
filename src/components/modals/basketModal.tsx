@@ -249,6 +249,7 @@ export interface IGoodsData {
   goodId: string;
   goodName: string;
   isSale: boolean;
+  id?: string;
   parametrs: {
     color: string;
     internalMem: string;
@@ -349,30 +350,41 @@ const BasketModal = ({ profile }: { profile: IProfile }) => {
       .catch(err => console.log(err));
   };
 
-  const submitHandlerOrder = () => {
-    firebase
-      .firestore()
-      .collection("successOrders")
-      .add({
-        orders,
-        status: "ordered",
-        date: moment().format("YYYY-MM-DD"),
-        summaryOrder: summaryOrderPrice,
-        userName: profile.displayName || profile.email || profile.phoneNumber
-      })
-      .then(() => {
+  const submitHandlerOrder = async () => {
+    const data = {
+      orders,
+      status: "ordered",
+      date: moment().format("YYYY-MM-DD"),
+      summaryOrder: summaryOrderPrice,
+      userName: profile.displayName || profile.email || profile.phoneNumber
+    };
+    try {
+      const response = await firebase
+        .firestore()
+        .collection("successOrders")
+        .add(data);
+      if (response.id) {
+        await firebase
+          .firestore()
+          .collection("successOrders")
+          .doc(response.id)
+          .update({
+            ...data,
+            id: response.id
+          });
         firebase
           .firestore()
           .collection("orders")
           .doc(profile.uid)
           .delete()
-          .then(() => {
+          .then(res => {
             dispatch(setOrders([]));
             setOrderStatus(true);
-          })
-          .catch(err => {});
-      })
-      .catch(err => {});
+          });
+      }
+    } catch (err) {
+      return;
+    }
   };
 
   if (orderStatus) {

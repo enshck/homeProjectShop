@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 import styled, { css } from "styled-components";
 import { useSelector } from "react-redux";
@@ -66,15 +66,43 @@ export interface ISuccessOrders {
   userName: string;
   summaryOrder: number;
   date: any;
-  id?: string;
+  id: string;
 }
 
 const OrdersContainer = () => {
-  const [detailOrderId, setDetailOrderId] = useState<number | null>(null);
+  const [detailOrderId, setDetailOrderId] = useState<string | null>(null);
+  const [sortedList, setSortedList] = useState<ISuccessOrders[]>([]);
+  const [changedOrder, setChangedOrder] = useState<ISuccessOrders>({
+    date: "",
+    orders: [],
+    status: "",
+    summaryOrder: 0,
+    userName: "",
+    id: ""
+  });
   const adminOrders = useSelector<IAdminOrdersReducers, ISuccessOrders[]>(
     state => state.adminOrders
   );
+
   const modalElement = document.getElementById("modal");
+
+  useEffect(() => {
+    const newChangedOrder = sortedList.find(elem => elem.id === detailOrderId);
+    newChangedOrder && setChangedOrder(newChangedOrder);
+  }, [detailOrderId, sortedList]);
+
+  useEffect(() => {
+    const sortPattern = ["ordered", "paidFor", "cancelled", "delivered"];
+    const newAdminOrdersList: ISuccessOrders[] = [];
+    sortPattern.forEach(elem => {
+      adminOrders.forEach(order => {
+        if (order.status === elem) {
+          newAdminOrdersList.push(order);
+        }
+      });
+    });
+    setSortedList(newAdminOrdersList);
+  }, [adminOrders]);
 
   return (
     <MainContainer>
@@ -84,7 +112,8 @@ const OrdersContainer = () => {
             setDetailOrderId={setDetailOrderId}
             detailOrderId={detailOrderId}
             adminOrders={adminOrders}
-            isOpenModal={Boolean(detailOrderId) || detailOrderId === 0}
+            isOpenModal={Boolean(detailOrderId)}
+            changedOrder={changedOrder}
           />,
           modalElement
         )}
@@ -97,11 +126,11 @@ const OrdersContainer = () => {
         </tr>
       </TableHeader>
       <TableBody>
-        {adminOrders.map((elem: ISuccessOrders, index: number) => {
-          const { status, date, summaryOrder, userName } = elem;
+        {sortedList.map((elem: ISuccessOrders, index: number) => {
+          const { status, date, summaryOrder, userName, id } = elem;
 
           return (
-            <tr onClick={() => setDetailOrderId(index)} key={index}>
+            <tr onClick={() => setDetailOrderId(id)} key={index}>
               <StatusTD typeContainer={status}>
                 {moment(date).format("YYYY-MM-DD")}
               </StatusTD>

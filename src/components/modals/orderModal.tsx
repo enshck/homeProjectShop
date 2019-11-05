@@ -11,8 +11,12 @@ import { ISuccessOrders } from "../pages/adminPanel/ordersContainer";
 import OrderStatusSelector from "../assets/OrderStatusSelector";
 import { setAdminOrders } from "../../store/actions";
 import Spinner from "../spinner";
-import { getSuccessOrders } from "../../utils/handlers";
-import AddOrderInput from "../../components/assets/AddOrderInput";
+import {
+  getSuccessOrders,
+  recalculationSummaryOrder
+} from "../../utils/handlers";
+import DynamicSearch from "../assets/DynamicSearch";
+import { IGoodsData } from "./basketModal";
 
 const MainModalContainer = styled.div`
   width: 100%;
@@ -196,30 +200,19 @@ const OrderModal = ({
   setDetailOrderId,
   detailOrderId,
   adminOrders,
-  isOpenModal
+  isOpenModal,
+  changedOrder
 }: {
-  setDetailOrderId: (detailOrderId: number | null) => void;
-  detailOrderId: number | null;
+  setDetailOrderId: (detailOrderId: string | null) => void;
+  detailOrderId: string | null;
   adminOrders: ISuccessOrders[];
   isOpenModal: boolean;
+  changedOrder: ISuccessOrders;
 }) => {
-  const [changedOrder, setChangedOrder] = useState<ISuccessOrders>({
-    date: "",
-    orders: [],
-    status: "",
-    summaryOrder: 0,
-    userName: "",
-    id: ""
-  });
   const { date, orders, status, summaryOrder, userName, id } = changedOrder;
   const [isOpen, setOpen] = useState<boolean>(false);
   const [isFetching, setFetching] = useState<boolean>(false);
   const dispatch = useDispatch();
-
-  useEffect(() => {
-    (detailOrderId || detailOrderId === 0) &&
-      setChangedOrder(adminOrders[detailOrderId]);
-  }, [detailOrderId, adminOrders]);
 
   const onChangeStatus = async (value: string) => {
     await firebase
@@ -239,12 +232,16 @@ const OrderModal = ({
     if (newCount > 0 && newCount < 1000) {
       const { orders, id } = changedOrder;
       orders[key].count = +newCount;
+      const newSummary = recalculationSummaryOrder({ changedOrder });
 
       await firebase
         .firestore()
         .collection("successOrders")
         .doc(id)
-        .set(changedOrder);
+        .set({
+          ...changedOrder,
+          summaryOrder: newSummary
+        });
 
       getSuccessOrders({
         handler: data => dispatch(setAdminOrders(data))
@@ -258,18 +255,48 @@ const OrderModal = ({
   };
 
   const deleteOrderHandler = async (key: number) => {
-    const changedOrderClone = changedOrder;
+    setFetching(true);
+    const changedOrderClone = { ...changedOrder };
     changedOrder.orders.splice(key, 1);
+    const newSummary = recalculationSummaryOrder({ changedOrder });
 
     await firebase
       .firestore()
       .collection("successOrders")
       .doc(id)
-      .set(changedOrderClone);
+      .set({
+        ...changedOrderClone,
+        summaryOrder: newSummary
+      });
 
     getSuccessOrders({
       handler: data => dispatch(setAdminOrders(data))
     });
+    setFetching(false);
+  };
+
+  const addGoodsInOrderHandler = async (product: IGoodsData) => {
+    setFetching(true);
+    const cloneChnagedOrder = { ...changedOrder };
+    cloneChnagedOrder.orders.push({
+      count: 1,
+      goodsData: product
+    });
+    const newSummary = recalculationSummaryOrder({ changedOrder });
+
+    await firebase
+      .firestore()
+      .collection("successOrders")
+      .doc(id)
+      .set({
+        ...cloneChnagedOrder,
+        summaryOrder: newSummary
+      });
+
+    getSuccessOrders({
+      handler: data => dispatch(setAdminOrders(data))
+    });
+    setFetching(false);
   };
 
   return (
@@ -297,7 +324,10 @@ const OrderModal = ({
                   isOpen={isOpen}
                   setOpen={setOpen}
                 />
-                <AddOrderInput />
+                <DynamicSearch
+                  onChangeHandler={addGoodsInOrderHandler}
+                  orders={orders}
+                />
               </ContolsContainer>
 
               <OrdersContainer>
@@ -306,7 +336,7 @@ const OrderModal = ({
                   const { goodId, goodName, pictureUrl } = goodsData;
 
                   return (
-                    <OrderElement>
+                    <OrderElement key={goodId}>
                       <img src={pictureUrl} alt={"productImage"} />
                       <DeleteIcon
                         src={deleteIcon}

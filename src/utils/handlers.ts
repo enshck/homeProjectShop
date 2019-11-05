@@ -6,6 +6,9 @@ import {
 } from "../components/modals/basketModal";
 
 import { ISuccessOrders } from "../components/pages/adminPanel/ordersContainer";
+import { IGoodsDataValidation } from "../components/pages/adminPanel/updateGoodsContainer";
+
+import { IErrorsObject } from "./interfaces";
 
 export const signOutHandler = () => {
   firebase
@@ -89,4 +92,54 @@ export const buyButtonHandler = ({
       setOpenBasketModal(true);
     })
     .catch(err => console.log(err));
+};
+
+export const recalculationSummaryOrder = ({
+  changedOrder
+}: {
+  changedOrder: ISuccessOrders;
+}) => {
+  const { orders } = changedOrder;
+  let sum: number = 0;
+  orders.forEach(({ count, goodsData }: IOrderElement) => {
+    sum = sum + +goodsData.price * count;
+  });
+
+  return +sum.toFixed(2);
+};
+
+export const createProductValidation = (form: IGoodsDataValidation) => {
+  const { goodName, parametrs, pictureUrl, price } = form;
+  const { color, internalMem, ram, sizeScreen, weight } = parametrs;
+  const errors: IErrorsObject = {};
+
+  if (!goodName || goodName.length < 1 || goodName.length > 20) {
+    errors.goodName = "Ошибка. Имя должно содержать от 1 до 20 символов";
+  }
+
+  if (!pictureUrl || pictureUrl.length < 1) {
+    errors.pictureUrl = "Вы не загрузили фотографию";
+  }
+
+  if (!price || price.length > 5 || price.length < 1) {
+    errors.price = "Ошибка";
+  }
+
+  if (!color || color.length < 1 || color.length > 10) {
+    errors.color = "Ошибка. Цвет должен содержать от 1 до 20 символов";
+  }
+  if (!internalMem || internalMem.length < 1 || internalMem.length > 10) {
+    errors.internalMem = "Ошибка.";
+  }
+  if (!ram || ram.length < 1 || ram.length > 10) {
+    errors.ram = "Ошибка.";
+  }
+  if (!sizeScreen || sizeScreen.length < 1 || sizeScreen.length > 10) {
+    errors.sizeScreen = "Ошибка.";
+  }
+  if (!weight || weight.length < 1 || weight.length > 10) {
+    errors.weight = "Ошибка.";
+  }
+
+  return errors;
 };

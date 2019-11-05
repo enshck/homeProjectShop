@@ -20,7 +20,13 @@ const ItemsContainer = styled.div`
   background: #f5f5f5;
 `;
 
-const Items = ({ profile }: { profile: IProfile }) => {
+const Items = ({
+  profile,
+  role
+}: {
+  profile: IProfile;
+  role: string | null;
+}) => {
   const [getGoods, goodsData] = useGetFirebaseData();
   const [getOrders, ordersData] = useGetFirebaseData();
   const dispatch = useDispatch();
@@ -46,6 +52,7 @@ const Items = ({ profile }: { profile: IProfile }) => {
         signOutHandler={signOutHandler}
         profile={profile}
         mode={"items"}
+        role={role}
       />
       <GoodsContainer profile={profile} />
     </ItemsContainer>
