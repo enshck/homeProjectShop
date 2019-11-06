@@ -103,7 +103,6 @@ const ModalContainer = styled.div`
   ${({ isOpenModal }: { isOpenModal: boolean }) =>
     isOpenModal &&
     css`
-      /* visibility: visible; */
       height: 80vh;
     `};
 `;
@@ -358,6 +357,7 @@ const BasketModal = ({ profile }: { profile: IProfile }) => {
       summaryOrder: summaryOrderPrice,
       userName: profile.displayName || profile.email || profile.phoneNumber
     };
+
     try {
       const response = await firebase
         .firestore()
@@ -394,7 +394,10 @@ const BasketModal = ({ profile }: { profile: IProfile }) => {
           <CloseButton
             src={close}
             alt={"close"}
-            onClick={() => dispatch(setOpenBasketModal(false))}
+            onClick={() => {
+              dispatch(setOpenBasketModal(false));
+              setOrderStatus(false);
+            }}
           />
           <ModalContent>
             <SucessOrderContainer>

@@ -232,7 +232,7 @@ const GoodsContainer = ({ profile }: { profile: IProfile }) => {
                     orders: orders,
                     singleGood: elem,
                     profile,
-                    setOrders,
+                    setOrders: orders => dispatch(setOrders(orders)),
                     setOpenBasketModal: status =>
                       dispatch(setOpenBasketModal(status))
                   })
