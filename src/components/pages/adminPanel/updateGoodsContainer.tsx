@@ -38,7 +38,7 @@ const UpdateGoodsContainer = () => {
     goodName: "",
     isSale: false,
     parametrs: {
-      color: "",
+      color: "black",
       internalMem: "",
       ram: "",
       sizeScreen: "",
@@ -96,7 +96,7 @@ const UpdateGoodsContainer = () => {
           goodName: "",
           isSale: false,
           parametrs: {
-            color: "",
+            color: "black",
             internalMem: "",
             ram: "",
             sizeScreen: "",

@@ -7,25 +7,6 @@ const MainContainer = styled.div`
   width: 100%;
 `;
 
-const Input = styled.input`
-  width: 100%;
-  font-size: 14px;
-  color: #444;
-  background: #fff;
-  border: 1px solid #707070;
-  padding: 6px 8px 6px;
-  outline: none;
-  border-radius: 3px;
-  box-sizing: border-box;
-  margin-top: 5px;
-  position: relative;
-  ${({ warning }: { warning: boolean }) =>
-    warning &&
-    css`
-      border-color: red;
-    `}
-`;
-
 const ColorsContainer = styled.div`
   position: absolute;
   visibility: hidden;
@@ -57,14 +38,20 @@ const ColorElement = styled.div`
     `}
 `;
 
+const ChangedColorContainer = styled.div`
+  width: 100%;
+  height: 30px;
+  content: "";
+  border-radius: 5px;
+  cursor: pointer;
+`;
+
 const ColorPicker = ({
   onInput,
-  value,
-  warning
+  value
 }: {
   onInput: (e: any) => void;
   value: string;
-  warning: boolean;
 }) => {
   const [isOpen, setOpen] = useState<boolean>(false);
   const node = useRef<any>(null);
@@ -84,8 +71,6 @@ const ColorPicker = ({
     setOpen(false);
   };
 
-  console.log(value);
-
   const onChangedColor = (value: string) => {
     Object.entries(colors).map(elem => {
       if (elem[1] === value) {
@@ -96,6 +81,7 @@ const ColorPicker = ({
         });
       }
     });
+    setOpen(false);
   };
 
   return (
@@ -110,7 +96,10 @@ const ColorPicker = ({
           />
         ))}
       </ColorsContainer>
-      <Input warning={warning} onClick={() => setOpen(true)} />
+      <ChangedColorContainer
+        style={{ background: colors[value] }}
+        onClick={() => setOpen(true)}
+      />
     </MainContainer>
   );
 };

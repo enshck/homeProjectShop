@@ -1,11 +1,15 @@
 import React, { useState } from "react";
 import styled from "styled-components";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 
 import Header from "../../header";
 import { useGetFirebaseData } from "../../../customHooks/useGetFirebaseData";
-import { setAdminOrders, setGoodsList } from "../../../store/actions";
+import {
+  setAdminOrders,
+  setGoodsList,
+  setOrders
+} from "../../../store/actions";
 import { IProfile } from "../../modals/basketModal";
 import { signOutHandler } from "../../../utils/handlers";
 import AdminContainer from "./adminContainer";
@@ -36,6 +40,7 @@ const AdminPanel = ({ profile }: { profile: IProfile }) => {
   const [changedMode, setChangedMode] = useState("orders");
   const [getAdminOrdersData, adminOrdersData] = useGetFirebaseData();
   const [getGoodsData, goodsData] = useGetFirebaseData();
+  const [getOrders, ordersData] = useGetFirebaseData();
   const dispatch = useDispatch();
 
   if (!adminOrdersData.called) {
@@ -49,6 +54,14 @@ const AdminPanel = ({ profile }: { profile: IProfile }) => {
     getGoodsData({
       collection: "goods",
       actionHandler: goods => dispatch(setGoodsList(goods))
+    });
+  }
+
+  if (!ordersData.called && profile) {
+    getOrders({
+      collection: "orders",
+      singleDoc: profile.uid,
+      actionHandler: orders => dispatch(setOrders(orders))
     });
   }
 

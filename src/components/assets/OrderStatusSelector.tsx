@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import styled, { css } from "styled-components";
 
 import { StatusContainer } from "./assets";

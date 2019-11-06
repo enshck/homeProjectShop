@@ -7,7 +7,6 @@ import {
 
 import { ISuccessOrders } from "../components/pages/adminPanel/ordersContainer";
 import { IGoodsDataValidation } from "../components/pages/adminPanel/updateGoodsContainer";
-
 import { IErrorsObject } from "./interfaces";
 
 export const signOutHandler = () => {
@@ -110,7 +109,7 @@ export const recalculationSummaryOrder = ({
 
 export const createProductValidation = (form: IGoodsDataValidation) => {
   const { goodName, parametrs, pictureUrl, price } = form;
-  const { color, internalMem, ram, sizeScreen, weight } = parametrs;
+  const { internalMem, ram, sizeScreen, weight } = parametrs;
   const errors: IErrorsObject = {};
 
   if (!goodName || goodName.length < 1 || goodName.length > 20) {
@@ -121,24 +120,24 @@ export const createProductValidation = (form: IGoodsDataValidation) => {
     errors.pictureUrl = "Вы не загрузили фотографию";
   }
 
-  if (!price || price.length > 5 || price.length < 1) {
-    errors.price = "Ошибка";
+  if (!price || price.length > 9 || price.length < 1) {
+    errors.price = "Ошибка. Цена не указана или слишком велика";
   }
 
-  if (!color || color.length < 1 || color.length > 10) {
-    errors.color = "Ошибка. Цвет должен содержать от 1 до 20 символов";
+  if (!internalMem || internalMem.length < 1 || internalMem.length > 5) {
+    errors.internalMem = "Ошибка. Длина поля от 1 до 5 символов";
   }
-  if (!internalMem || internalMem.length < 1 || internalMem.length > 10) {
-    errors.internalMem = "Ошибка.";
+
+  if (!ram || ram.length < 1 || ram.length > 5) {
+    errors.ram = "Ошибка. Длина поля от 1 до 5 символов";
   }
-  if (!ram || ram.length < 1 || ram.length > 10) {
-    errors.ram = "Ошибка.";
+
+  if (!sizeScreen || sizeScreen.length < 1 || sizeScreen.length > 5) {
+    errors.sizeScreen = "Ошибка. Длина поля от 1 до 5 символов";
   }
-  if (!sizeScreen || sizeScreen.length < 1 || sizeScreen.length > 10) {
-    errors.sizeScreen = "Ошибка.";
-  }
-  if (!weight || weight.length < 1 || weight.length > 10) {
-    errors.weight = "Ошибка.";
+
+  if (!weight || weight.length < 1 || weight.length > 5) {
+    errors.weight = "Ошибка. Длина поля от 1 до 5 символов";
   }
 
   return errors;

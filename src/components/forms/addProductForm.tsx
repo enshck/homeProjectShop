@@ -66,12 +66,12 @@ const AddProductForm = ({
         title={"Цена:"}
         CustomInput={PricePicker}
         value={formData.price}
-        onInput={e =>
+        onInput={e => {
           setData({
             ...formData,
             price: e.target.value
-          })
-        }
+          });
+        }}
         errors={errors}
       />
       <Input
@@ -96,12 +96,14 @@ const AddProductForm = ({
         type={"number"}
         title={"Обьем внутреней памяти:"}
         value={formData.parametrs.internalMem}
+        min={1}
+        max={99999}
         onInput={e =>
           setData({
             ...formData,
             parametrs: {
               ...formData.parametrs,
-              internalMem: e.target.value.slice(0, 4)
+              internalMem: e.target.value.slice(0, 5)
             }
           })
         }
@@ -111,13 +113,15 @@ const AddProductForm = ({
         id={"ram"}
         type={"number"}
         value={formData.parametrs.ram}
+        min={1}
+        max={99999}
         title={"Обьем оперативной памяти:"}
         onInput={e =>
           setData({
             ...formData,
             parametrs: {
               ...formData.parametrs,
-              ram: e.target.value.slice(0, 2)
+              ram: e.target.value.slice(0, 5)
             }
           })
         }
@@ -127,13 +131,15 @@ const AddProductForm = ({
         id={"sizeScreen"}
         type={"number"}
         title={"Екран:"}
+        min={1}
+        max={999}
         value={formData.parametrs.sizeScreen}
         onInput={e =>
           setData({
             ...formData,
             parametrs: {
               ...formData.parametrs,
-              sizeScreen: e.target.value.slice(0, 2)
+              sizeScreen: e.target.value.slice(0, 3)
             }
           })
         }
@@ -143,6 +149,8 @@ const AddProductForm = ({
         id={"weight"}
         type={"number"}
         title={"Вес:"}
+        min={1}
+        max={999}
         value={formData.parametrs.weight}
         onInput={e =>
           setData({

@@ -100,9 +100,6 @@ const Header = ({
   const orders = useSelector<IOrdersReducers, IOrderElement[]>(
     state => state.orders
   );
-  const isOpenBasketModal = useSelector<IIsOpenBasketModalReducers, boolean>(
-    state => state.isOpenBasketModal
-  );
   const dispatch = useDispatch();
 
   return (
@@ -153,10 +150,11 @@ const Header = ({
             )}
           </SortButtonsContainer>
         )}
-
-        <HeaderButton signOut onClick={signOutHandler}>
-          Выйти
-        </HeaderButton>
+        {mode !== "adminPanel" && (
+          <HeaderButton signOut onClick={signOutHandler}>
+            Выйти
+          </HeaderButton>
+        )}
       </SortContainer>
     </MainContainer>
   );

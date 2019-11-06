@@ -82,6 +82,10 @@ const Label = styled.label`
     `};
 `;
 
+const ErrorMessage = styled.div`
+  color: red;
+`;
+
 const Input = ({
   onChange,
   onInput,
@@ -94,7 +98,9 @@ const Input = ({
   value,
   CustomInput,
   maxlength,
-  pattern
+  pattern,
+  max,
+  min
 }: {
   onChange?: (e: any) => void;
   onInput?: (e: any) => void;
@@ -108,6 +114,8 @@ const Input = ({
   CustomInput?: any;
   maxlength?: number;
   pattern?: string;
+  max?: number;
+  min?: number;
 }) => {
   return (
     <InputContainer type={type}>
@@ -127,6 +135,8 @@ const Input = ({
           onInput={onInput}
           warning={Boolean(errors[id])}
           value={value}
+          max={max}
+          min={min}
         />
       ) : (
         <FancyInput
@@ -139,8 +149,11 @@ const Input = ({
           value={value}
           maxLength={maxlength}
           pattern={pattern}
+          max={max}
+          min={min}
         />
       )}
+      {errors[id] && <ErrorMessage>{errors[id]}</ErrorMessage>}
     </InputContainer>
   );
 };
