@@ -56,13 +56,13 @@ const WarningMessage = styled.p`
   color: red;
 `;
 
-const DynamicSearch = ({
-  onChangeHandler,
-  orders
-}: {
+interface IProps {
   onChangeHandler: (data: IGoodsData) => void;
   orders: IOrderElement[];
-}) => {
+}
+
+const DynamicSearch = (props: IProps) => {
+  const { onChangeHandler, orders } = props;
   const [searchValue, setSearchValue] = useState<string>("");
   const [resultsList, setResultList] = useState<IGoodsData[] | null>(null);
   const [excludeIds, setExcludeIds] = useState<string[]>([]);

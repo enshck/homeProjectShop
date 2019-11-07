@@ -46,13 +46,13 @@ const ChangedColorContainer = styled.div`
   cursor: pointer;
 `;
 
-const ColorPicker = ({
-  onInput,
-  value
-}: {
+interface IProps {
   onInput: (e: any) => void;
   value: string;
-}) => {
+}
+
+const ColorPicker = (props: IProps) => {
+  const { onInput, value } = props;
   const [isOpen, setOpen] = useState<boolean>(false);
   const node = useRef<any>(null);
 

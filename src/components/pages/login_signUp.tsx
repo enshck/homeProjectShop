@@ -17,15 +17,15 @@ const MainContainer = styled.div`
   background: #f6f8fb;
 `;
 
-const SignUp = ({
-  history,
-  type
-}: {
+interface IProps {
   history: {
     push: (path: string) => void;
   };
   type: string;
-}) => {
+}
+
+const SignUp = (props: IProps) => {
+  const { history, type } = props;
   const [formData, setFormData] = useState({
     email: "",
     password: "",

@@ -1,23 +1,25 @@
 import React from "react";
 import { Route, Redirect, Switch } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 import SignUp from "../components/pages/login_signUp";
 import AdminPanel from "../components/pages/adminPanel";
 import { IProfile } from "../components/modals/basketModal";
 import Items from "../components/pages/items";
 import ItemsDetail from "../components/pages/itemsDetails";
+import WrapComponent from "../components/wrapComponent";
 
 const PrivateRoute = ({
   component: Component,
-  authStatus,
+  isAuth,
   profile,
-  role,
+  isAdmin,
   ...rest
 }: {
   component: any;
-  authStatus: string;
+  isAuth: boolean;
   profile: IProfile;
-  role: string | null;
+  isAdmin: boolean;
   path: string;
   exact?: boolean;
 }) => {
@@ -25,9 +27,9 @@ const PrivateRoute = ({
     <Route
       {...rest}
       render={props => {
-        if (authStatus === "autorize") {
-          return <Component {...props} profile={profile} role={role} />;
-        } else if (authStatus === "unautorize") {
+        if (isAuth) {
+          return <Component {...props} />;
+        } else {
           return (
             <Redirect
               to={{
@@ -44,25 +46,26 @@ const PrivateRoute = ({
 
 const ProtectedRoute = ({
   component: Component,
-  authStatus,
+  isAuth,
   profile,
-  role,
+  isAdmin,
   ...rest
 }: {
   component: any;
-  authStatus: string;
+  isAuth: boolean;
   profile: IProfile;
-  role: string | null;
+  isAdmin: boolean;
   path: string;
   exact?: boolean;
 }) => {
+  console.log(isAdmin, "adm");
   return (
     <Route
       {...rest}
       render={props => {
-        if (role === "admin") {
-          return <Component {...props} profile={profile} />;
-        } else if (role === "user") {
+        if (isAdmin) {
+          return <Component {...props} />;
+        } else {
           return (
             <Redirect
               to={{
@@ -79,12 +82,12 @@ const ProtectedRoute = ({
 
 const PublicRoute = ({
   component: Component,
-  authStatus,
+  isAuth,
   type,
   ...rest
 }: {
   component: any;
-  authStatus: string;
+  isAuth: boolean;
   path: string;
   type: string;
 }) => {
@@ -92,9 +95,9 @@ const PublicRoute = ({
     <Route
       {...rest}
       render={props => {
-        if (authStatus === "unautorize") {
+        if (!isAuth) {
           return <Component {...props} type={type} />;
-        } else if (authStatus === "autorize") {
+        } else {
           return (
             <Redirect
               to={{
@@ -109,53 +112,51 @@ const PublicRoute = ({
   );
 };
 
-const Routes = ({
-  profile,
-  authStatus,
-  role
-}: {
-  profile: IProfile;
-  authStatus: string;
-  role: string | null;
-}) => {
-  return (
-    <Switch>
-      <Route
-        exact
-        path="/"
-        render={() =>
-          authStatus ? <Redirect to="/items" /> : <Redirect to="/login" />
-        }
-      />
-      <PublicRoute
-        component={SignUp}
-        path="/login"
-        {...{ authStatus, type: "auth" }}
-      />
-      <PublicRoute
-        component={SignUp}
-        path="/signUp"
-        {...{ authStatus, type: "signUp" }}
-      />
-      <PrivateRoute
-        exact
-        component={Items}
-        path="/items"
-        {...{ authStatus, profile, role }}
-      />
-      <PrivateRoute
-        component={ItemsDetail}
-        path={`/items/:id`}
-        {...{ authStatus, profile, role }}
-      />
-      <ProtectedRoute
-        component={AdminPanel}
-        path="/adminPanel"
-        {...{ authStatus, type: "auth", profile, role }}
-      />
+const Routes = () => {
+  const isAuth = useSelector<any, boolean>(state => state.isAuth);
+  const isAdmin = useSelector<any, boolean>(state => state.isAdmin);
+  const profile = useSelector<any, IProfile>(state => state.profile);
 
-      <Route render={() => <div>Not found</div>} />
-    </Switch>
+  return (
+    <WrapComponent>
+      <Switch>
+        <Route
+          exact
+          path="/"
+          render={() =>
+            isAdmin ? <Redirect to="/items" /> : <Redirect to="/login" />
+          }
+        />
+        <PublicRoute
+          component={SignUp}
+          path="/login"
+          {...{ isAuth, type: "auth" }}
+        />
+        <PublicRoute
+          component={SignUp}
+          path="/signUp"
+          {...{ isAuth, type: "signUp" }}
+        />
+        <PrivateRoute
+          exact
+          component={Items}
+          path="/items"
+          {...{ isAuth, profile, isAdmin }}
+        />
+        <PrivateRoute
+          component={ItemsDetail}
+          path={`/items/:id`}
+          {...{ isAuth, profile, isAdmin }}
+        />
+        <ProtectedRoute
+          component={AdminPanel}
+          path="/adminPanel"
+          {...{ isAuth, type: "auth", profile, isAdmin }}
+        />
+
+        <Route render={() => <div>Not found</div>} />
+      </Switch>
+    </WrapComponent>
   );
 };
 

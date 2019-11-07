@@ -1,64 +1,14 @@
 import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import styled, { css } from "styled-components";
 import { useSelector } from "react-redux";
 import moment from "moment";
 
-import { orderStatus } from "../../../utils/constants";
-import { StatusContainer } from "../../assets/assets";
-import { IAdminOrdersReducers } from "../../../utils/interfaces";
-import OrderModal from "../../modals/orderModal";
-import { IOrderElement } from "../../modals/basketModal";
-
-const MainContainer = styled.table`
-  width: 100%;
-`;
-
-const TableHeader = styled.thead`
-  background: #fff;
-  color: #7e756c;
-  td {
-    padding: 10px;
-  }
-`;
-
-const TableBody = styled.tbody`
-  & td {
-    padding: 20px 0px;
-  }
-  & tr {
-    cursor: pointer;
-    &:nth-of-type(even) {
-      background: #fff;
-    }
-    &:nth-of-type(odd) {
-      background: #f2f2f2;
-    }
-  }
-`;
-
-const StatusTD = styled.td`
-  ${({ typeContainer }: { typeContainer: String }) =>
-    typeContainer === "ordered" &&
-    css`
-      border-left: 5px solid #3d9ec8;
-    `};
-  ${({ typeContainer }: { typeContainer: String }) =>
-    typeContainer === "cancelled" &&
-    css`
-      border-left: 5px solid #da5f57;
-    `};
-  ${({ typeContainer }: { typeContainer: String }) =>
-    typeContainer === "delivered" &&
-    css`
-      border-left: 5px solid #279240;
-    `};
-  ${({ typeContainer }: { typeContainer: String }) =>
-    typeContainer === "paidFor" &&
-    css`
-      border-left: 5px solid #86a760;
-    `};
-`;
+import { orderStatus } from "../../../../utils/constants";
+import { StatusContainer } from "../../../assets/assets";
+import { IAdminOrdersReducers } from "../../../../utils/interfaces";
+import OrderModal from "../../../modals/orderModal";
+import { IOrderElement } from "../../../modals/basketModal";
+import { MainContainer, TableBody, TableHeader, StatusTD } from "./components";
 
 export interface ISuccessOrders {
   orders: IOrderElement[];
@@ -110,8 +60,6 @@ const OrdersContainer = () => {
         ReactDOM.createPortal(
           <OrderModal
             setDetailOrderId={setDetailOrderId}
-            detailOrderId={detailOrderId}
-            adminOrders={adminOrders}
             isOpenModal={Boolean(detailOrderId)}
             changedOrder={changedOrder}
           />,

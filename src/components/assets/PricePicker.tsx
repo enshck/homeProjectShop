@@ -20,16 +20,14 @@ const Input = styled.input`
       border-color: red;
     `}
 `;
-
-const PricePicker = ({
-  onInput,
-  value,
-  warning
-}: {
+interface IProps {
   onInput: (e: any) => void;
   value: string;
   warning: boolean;
-}) => {
+}
+
+const PricePicker = (props: IProps) => {
+  const { onInput, value, warning } = props;
   const formatCurrency = (e: {
     target: {
       value: string;

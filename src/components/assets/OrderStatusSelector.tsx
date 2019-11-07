@@ -29,17 +29,15 @@ const OptionsContainer = styled.div`
     `};
 `;
 
-const OrderStatusSelector = ({
-  status,
-  onSelect,
-  isOpen,
-  setOpen
-}: {
+interface IProps {
   status: string;
   onSelect: (elem: string) => void;
   isOpen: boolean;
   setOpen: (status: boolean) => void;
-}) => {
+}
+
+const OrderStatusSelector = (props: IProps) => {
+  const { status, onSelect, isOpen, setOpen } = props;
   const optionValues = Object.keys(orderStatus).filter(elem => elem !== status);
   const node = useRef<any>(null);
 

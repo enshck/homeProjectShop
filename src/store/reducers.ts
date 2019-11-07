@@ -51,10 +51,43 @@ const isOpenBasketModalReducers = (state = false, action: any) => {
   }
 };
 
+const profileReducers = (state = {}, action: any) => {
+  switch (action.type) {
+    case types.SET_PROFILE: {
+      return action.profile;
+    }
+    default:
+      return state;
+  }
+};
+
+const isAdminReducers = (state = false, action: any) => {
+  switch (action.type) {
+    case types.SET_IS_ADMIN: {
+      return action.isAdmin;
+    }
+    default:
+      return state;
+  }
+};
+
+const isAuthReducers = (state = false, action: any) => {
+  switch (action.type) {
+    case types.SET_IS_AUTH: {
+      return action.isAuth;
+    }
+    default:
+      return state;
+  }
+};
+
 export const reducers = combineReducers({
   goods: goodsReducers,
   sortType: sortTypeReducers,
   orders: ordersReducers,
   adminOrders: adminOrdersReducers,
-  isOpenBasketModal: isOpenBasketModalReducers
+  isOpenBasketModal: isOpenBasketModalReducers,
+  profile: profileReducers,
+  isAdmin: isAdminReducers,
+  isAuth: isAuthReducers
 });

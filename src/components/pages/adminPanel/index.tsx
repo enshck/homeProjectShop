@@ -11,7 +11,6 @@ import {
   setOrders
 } from "../../../store/actions";
 import { IProfile } from "../../modals/basketModal";
-import { signOutHandler } from "../../../utils/handlers";
 import AdminContainer from "./adminContainer";
 import ArrowBack from "../../../img/arrowBack.png";
 
@@ -36,7 +35,12 @@ const ButtonBack = styled(Link)`
   }
 `;
 
-const AdminPanel = ({ profile }: { profile: IProfile }) => {
+interface IProps {
+  profile: IProfile;
+}
+
+const AdminPanel = (props: IProps) => {
+  const { profile } = props;
   const [changedMode, setChangedMode] = useState("orders");
   const [getAdminOrdersData, adminOrdersData] = useGetFirebaseData();
   const [getGoodsData, goodsData] = useGetFirebaseData();
@@ -70,11 +74,7 @@ const AdminPanel = ({ profile }: { profile: IProfile }) => {
       <ButtonBack to={"/items"}>
         <img src={ArrowBack} alt={"back"} />
       </ButtonBack>
-      <Header
-        signOutHandler={signOutHandler}
-        profile={profile}
-        mode={"adminPanel"}
-      />
+      <Header mode={"adminPanel"} />
       <AdminContainer
         changedMode={changedMode}
         setChangedMode={setChangedMode}

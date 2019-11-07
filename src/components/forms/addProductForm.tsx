@@ -23,19 +23,16 @@ const SumbitButton = styled.div`
   margin-top: 20px;
 `;
 
-const AddProductForm = ({
-  onChangePicture,
-  formData,
-  setData,
-  submitHandler,
-  errors
-}: {
+interface IProps {
   onChangePicture: (e: any) => void;
   formData: IGoodsDataValidation;
   setData: (data: IGoodsDataValidation) => void;
   submitHandler: () => void;
   errors: IErrorsObject;
-}) => {
+}
+
+const AddProductForm = (props: IProps) => {
+  const { onChangePicture, formData, setData, submitHandler, errors } = props;
   return (
     <Form>
       <Input

@@ -1,7 +1,6 @@
-import React, { useEffect } from "react";
 import styled, { css } from "styled-components";
 
-const MainContainer = styled.div`
+export const MainContainer = styled.div`
   position: absolute;
   visibility: hidden;
   bottom: 30px;
@@ -34,30 +33,3 @@ const MainContainer = styled.div`
       padding: 5px;
     `}
 `;
-
-const PopUpMessage = ({
-  statusPopup,
-  setStatusPopUp
-}: {
-  statusPopup: string | null;
-  setStatusPopUp: (status: string | null) => void;
-}) => {
-  useEffect(() => {
-    if (statusPopup) {
-      setTimeout(() => {
-        setStatusPopUp(null);
-      }, 3000);
-    }
-  }, [statusPopup]);
-  return (
-    <MainContainer statusPopup={statusPopup}>
-      {statusPopup === "warning"
-        ? "При сохранении произошла ошибка"
-        : statusPopup === "success"
-        ? "Сохранение успешно"
-        : ""}
-    </MainContainer>
-  );
-};
-
-export default PopUpMessage;

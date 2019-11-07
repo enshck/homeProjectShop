@@ -12,13 +12,13 @@ const ContentContainer = styled.div`
   height: calc(100vh - 130px);
 `;
 
-const AdminContainer = ({
-  changedMode,
-  setChangedMode
-}: {
+interface IProps {
   changedMode: string;
   setChangedMode: (mode: string) => void;
-}) => {
+}
+
+const AdminContainer = (props: IProps) => {
+  const { changedMode, setChangedMode } = props;
   return (
     <MainContainer>
       <NavBar changedMode={changedMode} setChangedMode={setChangedMode} />

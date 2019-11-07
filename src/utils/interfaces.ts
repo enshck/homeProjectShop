@@ -1,4 +1,8 @@
-import { IGoodsData, IOrderElement } from "../components/modals/basketModal";
+import {
+  IGoodsData,
+  IOrderElement,
+  IProfile
+} from "../components/modals/basketModal";
 import { ISuccessOrders } from "../components/pages/adminPanel/ordersContainer";
 
 export interface IGoodsReducers {
@@ -23,4 +27,16 @@ export interface IIsOpenBasketModalReducers {
 
 export interface IErrorsObject {
   [key: string]: string;
+}
+
+export interface IProfileReducers {
+  profile: IProfile;
+}
+
+export interface IIsAdminReducers {
+  isAdmin: boolean;
+}
+
+export interface IIsAuthReducers {
+  isAuth: boolean;
 }

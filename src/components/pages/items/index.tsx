@@ -1,13 +1,13 @@
 import React from "react";
 import styled from "styled-components";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import Header from "../../header";
 import { IProfile } from "../../modals/basketModal";
+import { IProfileReducers } from "../../../utils/interfaces";
 import { useGetFirebaseData } from "../../../customHooks/useGetFirebaseData";
 import { setGoodsList, setOrders } from "../../../store/actions";
 import GoodsContainer from "./goodsContainer";
-import { signOutHandler } from "../../../utils/handlers";
 
 const ItemsContainer = styled.div`
   position: absolute;
@@ -20,15 +20,12 @@ const ItemsContainer = styled.div`
   background: #f5f5f5;
 `;
 
-const Items = ({
-  profile,
-  role
-}: {
-  profile: IProfile;
-  role: string | null;
-}) => {
+const Items = () => {
   const [getGoods, goodsData] = useGetFirebaseData();
   const [getOrders, ordersData] = useGetFirebaseData();
+  const profile = useSelector<IProfileReducers, IProfile>(
+    state => state.profile
+  );
   const dispatch = useDispatch();
 
   if (!goodsData.called) {
@@ -48,13 +45,8 @@ const Items = ({
 
   return (
     <ItemsContainer>
-      <Header
-        signOutHandler={signOutHandler}
-        profile={profile}
-        mode={"items"}
-        role={role}
-      />
-      <GoodsContainer profile={profile} />
+      <Header mode={"items"} />
+      <GoodsContainer />
     </ItemsContainer>
   );
 };

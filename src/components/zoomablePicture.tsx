@@ -6,7 +6,12 @@ const IMG = styled.img`
   height: 100%;
 `;
 
-const ZoomablePicture = ({ url }: { url: string }) => {
+interface IProps {
+  url: string;
+}
+
+const ZoomablePicture = (props: IProps) => {
+  const { url } = props;
   const [isHoverPicture, setStatusHoverPicture] = useState(false);
   const [xMouseCoordinate, setXMouseCoordinate] = useState(0);
   const [yMouseCoordinate, setYMouseCoordinate] = useState(0);

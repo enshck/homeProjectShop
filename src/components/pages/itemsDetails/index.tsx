@@ -9,8 +9,7 @@ import { IGoodsData, IProfile } from "../../modals/basketModal";
 import { setGoodsList, setOrders } from "../../../store/actions";
 import Header from "../../header";
 import ArrowBack from "../../../img/arrowBack.png";
-import { signOutHandler } from "../../../utils/handlers";
-import ItemsDetailContainer from "./itemsDetailsContainer";
+import ItemsDetailContainer from "./ItemsDetailsContainer";
 
 const MainContainer = styled.div`
   position: absolute;
@@ -42,19 +41,17 @@ const ButtonBack = styled(Link)`
   }
 `;
 
-const ItemsDetail = ({
-  match,
-  profile,
-  role
-}: {
+interface IProps {
   match: {
     params: {
       id: string;
     };
   };
   profile: IProfile;
-  role: string | null;
-}) => {
+}
+
+const ItemsDetail = (props: IProps) => {
+  const { match, profile } = props;
   const [changedProduct, changeProduct] = useState<any>({
     parametrs: {}
   });
@@ -92,13 +89,8 @@ const ItemsDetail = ({
       <ButtonBack to={"/items"}>
         <img src={ArrowBack} alt={"back"} />
       </ButtonBack>
-      <Header
-        signOutHandler={signOutHandler}
-        profile={profile}
-        mode={"singleItem"}
-        role={role}
-      />
-      <ItemsDetailContainer changedProduct={changedProduct} profile={profile} />
+      <Header mode={"singleItem"} />
+      <ItemsDetailContainer changedProduct={changedProduct} />
     </MainContainer>
   );
 };
