@@ -15,6 +15,7 @@ export const useGetFirebaseData = (): [
     loading: boolean;
     called: boolean;
     error: any;
+    setCalled: (status: boolean) => void;
   }
 ] => {
   const [data, setData] = useState<any>([]);
@@ -69,5 +70,5 @@ export const useGetFirebaseData = (): [
     setLoading(false);
   };
 
-  return [handeleCall, { data, loading, called, error }];
+  return [handeleCall, { data, loading, called, error, setCalled }];
 };

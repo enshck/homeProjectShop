@@ -19,6 +19,7 @@ export const SubmitButton = styled.div`
   width: 100%;
   -o-text-overflow: ellipsis;
   text-overflow: ellipsis;
+
   white-space: nowrap;
   overflow: hidden;
   font-weight: 700;
