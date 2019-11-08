@@ -6,8 +6,7 @@ import {
   ISortTypeReducers,
   IOrdersReducers,
   IProfileReducers,
-  IIsAdminReducers,
-  IIsAuthReducers
+  IIsAdminReducers
 } from "../../utils/interfaces";
 import { signOutHandler } from "../../utils/handlers";
 import { IProfile, IOrderElement } from "../modals/basketModal";
@@ -45,7 +44,6 @@ const Header = (props: IProps) => {
   const isAdmin = useSelector<IIsAdminReducers, boolean>(
     state => state.isAdmin
   );
-  const isAuth = useSelector<IIsAuthReducers, boolean>(state => state.isAuth);
   const dispatch = useDispatch();
 
   return (

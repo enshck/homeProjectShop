@@ -5,6 +5,7 @@ import { colors } from "../../utils/constants";
 
 const MainContainer = styled.div`
   width: 100%;
+  position: relative;
 `;
 
 const ColorsContainer = styled.div`

@@ -63,4 +63,7 @@ export const ButtonLink = styled(Link)`
     width: 80%;
     height: 80%;
   }
+  &:hover {
+    background: #223e92;
+  }
 `;

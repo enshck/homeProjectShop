@@ -9,12 +9,14 @@ export const TableHeader = styled.thead`
   color: #7e756c;
   td {
     padding: 10px;
+    text-align: center;
   }
 `;
 
 export const TableBody = styled.tbody`
   & td {
     padding: 20px 0px;
+    text-align: center;
   }
   & tr {
     cursor: pointer;

@@ -184,6 +184,10 @@ export const ButtonSubmit = styled.div`
   align-items: center;
   padding: 5px;
   border-radius: 4px;
+  transition: 0.1s;
+  &:hover {
+    background: #26af62;
+  }
 `;
 
 export const DeleteIcon = styled.img`

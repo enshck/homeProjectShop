@@ -1,64 +1,21 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, Fragment } from "react";
 import { useSelector } from "react-redux";
-import styled, { css } from "styled-components";
 
-import { IGoodsData, IOrderElement } from "../modals/basketModal";
-import { IGoodsReducers } from "../../utils/interfaces";
-
-const MainContainer = styled.div`
-  position: relative;
-`;
-
-const ResultContainer = styled.div`
-  position: absolute;
-  background: #f2f2f2;
-  z-index: 1000;
-  overflow: auto;
-  max-height: 300px;
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #d2d2d2;
-`;
-
-const Input = styled.input`
-  border: 1px solid #d2d2d2;
-  padding: 5px;
-  border-radius: 5px;
-  outline: none;
-`;
-
-const ResultElement = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: #fff;
-  margin-top: 5px;
-  padding: 10px;
-  cursor: pointer;
-  img {
-    width: 80px;
-    min-height: 80px;
-    max-height: 120px;
-  }
-  ${({ isInExcludeList }: { isInExcludeList: boolean }) =>
-    isInExcludeList &&
-    css`
-      opacity: 0.5;
-    `}
-`;
-
-const NonResultMessage = styled.p`
-  font-size: 12px;
-`;
-
-const WarningMessage = styled.p`
-  font-size: 12px;
-  color: red;
-`;
+import { IGoodsData, IOrderElement } from "../../modals/basketModal";
+import { IGoodsReducers } from "../../../utils/interfaces";
+import {
+  Input,
+  MainContainer,
+  ResultContainer,
+  ResultElement,
+  NonResultMessage,
+  WarningMessage,
+  DetailsButton
+} from "./components";
 
 interface IProps {
-  onChangeHandler: (data: IGoodsData) => void;
-  orders: IOrderElement[];
+  onChangeHandler?: (data: IGoodsData) => void;
+  orders?: IOrderElement[];
 }
 
 const DynamicSearch = (props: IProps) => {
@@ -84,9 +41,11 @@ const DynamicSearch = (props: IProps) => {
   }, [searchValue]);
 
   useEffect(() => {
-    const excludeIds = orders.map(elem => elem.goodsData.goodId);
+    if (orders) {
+      const excludeIds = orders.map(elem => elem.goodsData.goodId);
 
-    setExcludeIds(excludeIds);
+      setExcludeIds(excludeIds);
+    }
   }, [orders]);
 
   useEffect(() => {
@@ -118,24 +77,33 @@ const DynamicSearch = (props: IProps) => {
       {resultsList && (
         <ResultContainer>
           {resultsList.length < 1 && searchValue.length > 0 ? (
-            <NonResultMessage>Результаты отсутсвуют</NonResultMessage>
+            <NonResultMessage>Результаты отсутствуют</NonResultMessage>
           ) : (
             resultsList.map(elem => {
               const { goodName, pictureUrl, goodId } = elem;
               const isInExcludeList = excludeIds.includes(goodId);
 
               return (
-                <ResultElement
-                  key={goodId}
-                  onClick={() => !isInExcludeList && onChangeHandler(elem)}
-                  isInExcludeList={isInExcludeList}
-                >
-                  <img src={pictureUrl} alt={"product"} />
-                  <p>{goodName}</p>
-                  {isInExcludeList && (
-                    <WarningMessage> Уже в списке заказов</WarningMessage>
-                  )}
-                </ResultElement>
+                <Fragment>
+                  <ResultElement
+                    key={goodId}
+                    onClick={() => {
+                      !isInExcludeList &&
+                        onChangeHandler &&
+                        onChangeHandler(elem);
+                    }}
+                    isInExcludeList={isInExcludeList}
+                  >
+                    <img src={pictureUrl} alt={"product"} />
+                    <p>{goodName}</p>
+                    <DetailsButton to={`/items/${goodId}`}>
+                      Перейти к товару
+                    </DetailsButton>
+                    {isInExcludeList && (
+                      <WarningMessage> Уже в списке заказов</WarningMessage>
+                    )}
+                  </ResultElement>
+                </Fragment>
               );
             })
           )}

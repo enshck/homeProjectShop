@@ -3,16 +3,19 @@ import { Link } from "react-router-dom";
 
 export const MainContainer = styled.div`
   overflow: auto;
-  display: flex;
-  flex-direction: column;
-  ${({ sortType }: { sortType: String }) =>
+  ${({ sortType }: { sortType: string }) =>
     sortType === "grid" &&
     css`
-      flex-direction: row;
-      overflow: visible;
-      flex-wrap: wrap;
       width: 100%;
-      justify-content: center;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      grid-gap: 10px;
+      @media (max-width: 950px) {
+        grid-template-columns: repeat(2, 1fr);
+      }
+      @media (max-width: 550px) {
+        grid-template-columns: 1fr;
+      }
     `}
 `;
 export const SingleGoodContainer = styled.div`
@@ -27,7 +30,8 @@ export const SingleGoodContainer = styled.div`
   border-top: 1px solid #eaeaea;
   border-left: 1px solid #eaeaea;
   padding: 15px;
-  ${({ sortType }: { sortType: String }) =>
+  transition: 0.2s;
+  ${({ sortType }: { sortType: string }) =>
     sortType === "grid" &&
     css`
       border: 1px solid #eaeaea
@@ -50,7 +54,10 @@ export const NameContainer = styled.div`
   display: flex;
   flex-direction: column;
   margin-left: 10px;
-  ${({ sortType }: { sortType: String }) =>
+  p {
+    text-align: center;
+  }
+  ${({ sortType }: { sortType: string }) =>
     sortType === "grid" &&
     css`
       align-items: center;
@@ -61,7 +68,7 @@ export const InfoContainer = styled.div`
   display: flex;
   position: relative;
   align-items: center;
-  ${({ sortType }: { sortType: String }) =>
+  ${({ sortType }: { sortType: string }) =>
     sortType === "grid" &&
     css`
       flex-direction: column;
@@ -86,22 +93,11 @@ export const ButtonBuy = styled.div`
   border-radius: 5px;
   margin-top: 5px;
   color: #fff;
+  transition: 0.1s;
   cursor: pointer;
-`;
-
-export const GoodsRow = styled.div`
-  @media (max-width: 950px) {
-    grid-template-columns: repeat(2, 1fr);
+  &:hover {
+    background: #26af62;
   }
-  @media (max-width: 550px) {
-    grid-template-columns: 1fr;
-  }
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  grid-gap: 10px;
-  width: 100%;
-  justify-content: space-between;
-  margin-top: 10px;
 `;
 
 export const DetailsButton = styled(Link)`

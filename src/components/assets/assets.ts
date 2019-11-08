@@ -24,6 +24,9 @@ export const GlobalStyleComponent = styled.div`
 `;
 
 export const HeaderButton = styled.div`
+  &:hover {
+    background: #223e92
+  }
   background: #3b3e47;
   color: #fff;
   display: flex;
@@ -36,6 +39,9 @@ export const HeaderButton = styled.div`
       active &&
       css`
         background: #d9b176;
+        &:hover {
+          background: #cba979;
+        }
       `}
     ${({ sortButton }: IProps) =>
       sortButton &&
@@ -73,6 +79,7 @@ export const StatusContainer = styled.div`
   justify-content: center;
   align-items: center;
   border-radius: 10px;
+  margin: 0 auto;
   margin-top: 5px;
   cursor: pointer;
   color: #fff;
