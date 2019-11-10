@@ -77,21 +77,12 @@ const SignUp = (props: IProps) => {
 
   return (
     <MainContainer>
-      {type === "auth" ? (
-        <SignUpForm
-          formData={formData}
-          setFormData={setFormData}
-          signUpHandler={authHandler}
-          type={type}
-        />
-      ) : (
-        <SignUpForm
-          formData={formData}
-          setFormData={setFormData}
-          signUpHandler={signUpHandler}
-          type={type}
-        />
-      )}
+      <SignUpForm
+        formData={formData}
+        setFormData={setFormData}
+        signUpHandler={type === "auth" ? authHandler : signUpHandler}
+        type={type}
+      />
     </MainContainer>
   );
 };

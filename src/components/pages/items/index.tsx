@@ -35,7 +35,7 @@ const Items = () => {
     });
   }
 
-  if (!ordersData.called) {
+  if (!ordersData.called && profile.uid) {
     getOrders({
       collection: "orders",
       singleDoc: profile.uid,
